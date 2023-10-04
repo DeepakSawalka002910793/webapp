@@ -128,10 +128,6 @@ const deleteAssignment = async (req, res) => {
         return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Unauthorized' });
     }
 
-    if (Object.keys(req.body).length === 0) {
-        // Send 204 status if the body is empty
-        return res.status(204).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
-      }
 
     if (req._body) {  // You may also check Object.keys(req.body).length > 0 depending on your express configuration
         return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send("Bad Request");

@@ -24,12 +24,12 @@ router.delete('/:id', helper.pAuthCheck, assignment.deleteAssignment);
 
 // Add this to return 405 for PATCH requests
 router.patch('/', (req, res) => {
-    res.status(405).set('Cache-Control', 'no-store, no-cache, must-revalidate').send('Method Not Allowed!!');
+    res.status(405).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
 });
 
 // Add this to return 405 for PATCH requests
 router.patch('/:id', (req, res) => {
-    res.status(405).set('Cache-Control', 'no-store, no-cache, must-revalidate').send('Method Not Allowed!!');
+    res.status(405).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
 });
 
 module.exports = router;

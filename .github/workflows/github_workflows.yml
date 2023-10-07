@@ -8,13 +8,13 @@ on:
       - opened
 
 jobs:
-    name: setup-nodejs
+  integration-test:
     runs-on: ubuntu-latest
     env:
       DBHOST: "localhost"
       PORT: 3000
       DBUSER: "root"
-      DBPASS: "Root123#"
+      DBPASS: "Root123#"  
       DATABASE: "csye_assign3"
       CSV_FILE_PATH: "./opt/users.csv"
 
@@ -22,10 +22,10 @@ jobs:
       mariadb:
         image: mariadb:latest
         env:
-            MYSQL_ROOT_PASSWORD: "Root123#"
-            MYSQL_DATABASE: "csye_assign3"
+          MYSQL_ROOT_PASSWORD: "Root123#" 
+          MYSQL_DATABASE: "csye_assign3"
         ports:
-          - 5432:5432
+          - 3306:3306  # Corrected the port
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval 10s
@@ -34,10 +34,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2  # Corrected the version
 
       - name: Use Node.js 18
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2  # Corrected the version
         with:
           node-version: "18"
 

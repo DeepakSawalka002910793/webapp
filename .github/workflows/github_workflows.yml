@@ -8,13 +8,14 @@ on:
       - opened
 
 jobs:
-  setup-nodejs:
-    if: github.event.pull_request.head.repo.fork
     name: setup-nodejs
     runs-on: ubuntu-latest
     env:
       DBHOST: "localhost"
       PORT: 3000
+      DBUSER: "root"
+      DBPASS: "Root123#"
+      DATABASE: "csye_assign3"
       DATABASE: "csye_assign3"
       CSV_FILE_PATH: "./opt/users.csv"
 
@@ -22,8 +23,8 @@ jobs:
       mariadb:
         image: mariadb:latest
         env:
-          DBPASS: "Root123#"
-          DATABASE: "csye_assign3"
+            MYSQL_ROOT_PASSWORD: "Root123#"
+            MYSQL_DATABASE: "csye_assign3"
         ports:
           - 5432:5432
         options: >-

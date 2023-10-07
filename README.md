@@ -1,5 +1,5 @@
 # webapp
-Creating a api request using Nodejs and MariaDB and checking it in POSTMAN..
+Creating a api request using Nodejs and MariaDB and checking it in POSTMAN.
 
 Prerequisites 1.Visual studio code (IDE) 2.POSTMAN 3.Database - Maria.DB 4.Node.js
 

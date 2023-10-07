@@ -14,7 +14,7 @@ db.user.hasMany(db.assignment, {foreignKey: "owner_user_id"});
 db.sequelize.sync({force: false})
   .then(() =>{
 
-   console.log("Database setup complete.");
+   //console.log("Database setup complete.");
    
   // Call the newUser function to process and insert the CSV data
    newUser({}, {                   // Passing an empty req object and defining res object

@@ -16,7 +16,6 @@ jobs:
       DBUSER: "root"
       DBPASS: "Root123#"
       DATABASE: "csye_assign3"
-      DATABASE: "csye_assign3"
       CSV_FILE_PATH: "./opt/users.csv"
 
     services:

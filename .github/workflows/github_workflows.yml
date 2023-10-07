@@ -13,7 +13,7 @@ jobs:
     name: setup-nodejs
     runs-on: ubuntu-latest
     env:
-      SERV_ADDR: "localhost"
+      DBHOST: "localhost"
       PORT: 3000
       DATABASE: "csye_assign3"
       CSV_FILE_PATH: "./opt/users.csv"

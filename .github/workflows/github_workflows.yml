@@ -1,0 +1,48 @@
+name: gitworkflow
+
+on:
+  pull:
+    branches:
+      - main
+    types:
+      - opened
+
+jobs:
+  setup-nodejs:
+    if: github.event.pull_request.head.repo.fork
+    name: setup-nodejs
+    runs-on: ubuntu-latest
+    env:
+      SERV_ADDR: "localhost"
+      PORT: 3000
+      DATABASE: "csye_assign3"
+      CSV_FILE_PATH: "./opt/users.csv"
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        env:
+          DBPASS: "Root123#"
+          DATABASE: "csye_assign3"
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Jest tests
+        run: npm test

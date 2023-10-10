@@ -3,7 +3,7 @@ const request = require("supertest");
 //const sequelize = require('../config/dbSetup');
 
 
-describe("GET /healthz ", () => {
+describe("GET /healthz22 ", () => {
   test("It should respond 200", async () => {
     //expect.assertions(1); 
     const response = await request(app).get("/healthz");

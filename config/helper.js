@@ -120,6 +120,7 @@ const dbCredVal = async (eMailId, pass, id) => {
   return '';  // Consider returning null or undefined to indicate no error
 };
 
+
 /*
   let result = await db.user.findOne({where: {id:id}, attributes: ['email','password']});
   if (!result) {
@@ -135,11 +136,11 @@ const dbCredVal = async (eMailId, pass, id) => {
   return '';
 }
 
-*/
 
 
 
-/*
+
+
 const uAuthCheck = async (req, res) => {
   if (!req.headers.authorization || req.headers.authorization.indexOf("Basic ") === -1) {
     return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Unauthorized" });

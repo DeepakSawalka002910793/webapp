@@ -12,7 +12,6 @@ const createPassHash = async (pass) => {
 }
 
 
-
 const getDecryptedCreds = (authHeader) => {
   const base64Creds = authHeader.split(" ")[1];
   const credentials = Buffer.from(base64Creds, "base64").toString("ascii");

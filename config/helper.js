@@ -18,7 +18,7 @@ const getDecryptedCreds = (authHeader) => {
   const credentials = Buffer.from(base64Creds, "base64").toString("ascii");
   const eMail = credentials.split(":")[0];
   const pass = credentials.split(":")[1];
-  return {eMail, pass};
+  return {eMail, pass};}
 
 
   const pAuthCheck = async (req, res, next) => {
@@ -118,7 +118,8 @@ const getDecryptedCreds = (authHeader) => {
   
     return '';  // Consider returning null or undefined to indicate no error
   };
-  
+
+
 /*
   let result = await db.user.findOne({where: {id:id}, attributes: ['email','password']});
   if (!result) {
@@ -207,4 +208,3 @@ module.exports = {
     //uAuthCheck,
     
 };
-}

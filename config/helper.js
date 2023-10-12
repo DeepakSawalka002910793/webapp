@@ -36,12 +36,8 @@ const getDecryptedCreds = (authHeader) => {
 
   return '';
 }
-
-
-
-
-
-
+*/
+/*
 const uAuthCheck = async (req, res) => {
   if (!req.headers.authorization || req.headers.authorization.indexOf("Basic ") === -1) {
     return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Unauthorized" });
@@ -114,4 +110,4 @@ module.exports = {
     //uAuthCheck,
     
 };
-
+}

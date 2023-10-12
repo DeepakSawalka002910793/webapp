@@ -14,8 +14,6 @@ const db = require('./config/dbSetup');
 db.user.hasMany(db.assignment, {foreignKey: "owner_user_id"});
 db.sequelize.sync({force: false})
   .then(() =>{
-
-   //console.log("Database setup complete.");
    
   // Call the newUser function to process and insert the CSV data
    newUser({}, {                   // Passing an empty req object and defining res object
@@ -29,6 +27,7 @@ db.sequelize.sync({force: false})
       // Check if the data load was successful
       if (this.statusCode === 201) {
         console.log('Data loaded successfully into the database.');
+        
         
       }
     }
@@ -67,7 +66,7 @@ app.use('/healthz', (req, res) => {
   }   
 });
 
-//app.use('/v1/login',userRoutes);
+
 app.use('/v1/assignments', assignmentRoutes);
 
 app.use(methodOverride())

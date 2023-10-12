@@ -3,11 +3,7 @@ const db = require('../config/dbSetup');
 
 const createNewAssignment = async (req, res) => { // Create new Assignment function
 
-    /*
-        const userId = req.user && req.user.id;  // Extract user ID from the token
-        if (!userId) {
-            return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Unauthorized' });
-        }*/
+    
 
     if(!req.body.name || 
         !req.body.points || 
@@ -34,10 +30,7 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
 
         let {eMail, pass} = helper.getDecryptedCreds(req.headers.authorization);
         let user = await db.user.findOne({where:{email:eMail}});
-        /*
-        const user = await db.user.findByPk(userId);
-        if (!user) {
-            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'User not found' });}*/
+       
     
         let data = await user.createAssignment({
             name:req.body.name,
@@ -65,7 +58,7 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
     }
 }
 
-const putAssignmentDetails = async (req, res) => {  // Create new product function
+const putAssignmentDetails = async (req, res) => {  
 
     
     const userId = req.user.id;
@@ -96,7 +89,7 @@ const putAssignmentDetails = async (req, res) => {  // Create new product functi
       // Extract assignment ID from the request parameters
 
     try {
-        const assignment = await db.assignment.findByPk(assignId); //findOne({ where: { id: assignId } });
+        const assignment = await db.assignment.findByPk(assignId); 
 
         // Check if the assignment exists
         if (!assignment) {
@@ -143,7 +136,7 @@ const deleteAssignment = async (req, res) => {
     }
 
 
-    if (req._body) {  // You may also check Object.keys(req.body).length > 0 depending on your express configuration
+    if (req._body) {  
         return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send("Bad Request");
     }
 
@@ -151,7 +144,7 @@ const deleteAssignment = async (req, res) => {
 
     try {
         // First, check if the assignment exists
-        const assignment = await db.assignment.findByPk(assignId); //findOne({ where: { id: assignmentId } });
+        const assignment = await db.assignment.findByPk(assignId);
 
         if (!assignment) {
             return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Assignment not found" });

@@ -28,6 +28,7 @@ db.sequelize.sync({force: false})
       if (this.statusCode === 201) {
         console.log('Data loaded successfully into the database.');
         
+        
       }
     }
   });
@@ -65,7 +66,7 @@ app.use('/healthz', (req, res) => {
   }   
 });
 
-//app.use('/v1/login',userRoutes);
+
 app.use('/v1/assignments', assignmentRoutes);
 
 app.use(methodOverride())

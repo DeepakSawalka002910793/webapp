@@ -12,11 +12,6 @@ const createPassHash = async (pass) => {
     return hashedpassword
 }
 
-/*
-const validateEmail = (email) => {
-    const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-    return reg.test(email);
-};*/
 
 const getDecryptedCreds = (authHeader) => {
   const base64Creds = authHeader.split(" ")[1];

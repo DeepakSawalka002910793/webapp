@@ -1,6 +1,5 @@
 const app = require('../server');
 const request = require("supertest");
-//const sequelize = require('../config/dbSetup');
 
 
 describe("GET /healthz ", () => {
@@ -11,7 +10,3 @@ describe("GET /healthz ", () => {
   });
 });
 
-/* Closing the database connection after all tests have run
-afterAll(async () => {
-  await sequelize.close(); // This ensures that the DB connection is closed after tests
-});*/

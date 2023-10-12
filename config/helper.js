@@ -13,7 +13,7 @@ const createPassHash = async (pass) => {
 }
 
 /*
-const validateEmail = (email) => {
+const validateEmail = (eMail) => {
     const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(email);
 };*/

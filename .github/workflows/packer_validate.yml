@@ -13,6 +13,9 @@ jobs:
       - name: Github code checkout
         uses: actions/checkout@v2
       
+      - name: Create a zip folder
+        run: zip -r webapp.zip ./ -x *.git*
+      
       - name: Install Packer
         run: |
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -

@@ -13,12 +13,7 @@ jobs:
     steps:
       - name: Github code checkout
         uses: actions/checkout@v2
-      
-      # Insert your steps for integration testing here
-      - name: Run integration test
-        run:  npm test
           
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:

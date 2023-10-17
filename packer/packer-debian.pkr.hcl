@@ -81,8 +81,8 @@ build {
   sources = ["source.amazon-ebs.my-ami"]
 
   provisioner "file" {
-    source      = ${var.artifacts_source}
-    destination = ${var.artifacts_destination}
+    source      = "${var.artifacts_source}"
+    destination = "${var.artifacts_destination}"
   }
 
   provisioner "shell" {

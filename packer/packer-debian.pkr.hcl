@@ -37,6 +37,16 @@ variable "ami_users" {
   default = ["998931800090"]
 }
 
+variable "artifacts_source" {
+  type    = string
+  default = "../webapp.zip"
+}
+
+variable "artifacts_destination" {
+  type    = string
+  default = "/home/admin/webapp.zip"
+}
+
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "debian-ami-1"
@@ -71,8 +81,8 @@ build {
   sources = ["source.amazon-ebs.my-ami"]
 
   provisioner "file" {
-    source      = "./webapp.zip"
-    destination = "/home/admin/webapp.zip"
+    source      = ${var.artifacts_source}
+    destination = ${var.artifacts_destination}
   }
 
   provisioner "shell" {

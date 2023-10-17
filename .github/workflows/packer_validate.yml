@@ -21,9 +21,11 @@ jobs:
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
           sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
           sudo apt-get update && sudo apt-get install packer
+        
 
       - name: Packer Init
         run: packer init packer-debian.pkr.hcl || exit 1
+        working-directory: packer
       
       - name: Packer FMT
         run: |
@@ -32,6 +34,8 @@ jobs:
             echo "Packer files are not formatted correctly!"
             exit 1
           fi
+        working-directory: packer
       
       - name: Packer Validate
         run: packer validate packer-debian.pkr.hcl || (echo "Packer template validation failed!" && exit 1)
+        working-directory: packer

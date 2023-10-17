@@ -2,12 +2,14 @@ name: Build ami on aws
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
 
 jobs:
   test_and_build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Github code checkout

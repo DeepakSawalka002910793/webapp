@@ -1,8 +1,8 @@
 name: Build ami on aws
 
 on:
+  workflow_dispatch:
   push:
-    types: [closed]
     branches:
       - main
 

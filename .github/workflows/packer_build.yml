@@ -1,0 +1,54 @@
+name: Build ami on aws
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  test_and_build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github code checkout
+        uses: actions/checkout@v2
+      
+      # Insert your steps for integration testing here
+      - name: Run integration test
+        run:  npm test
+          
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Build application artifact
+        run: zip -r app.zip ./ -x '*.git*'
+      
+      - name: Packer Init
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: init
+          target: packer/ami.pkr.hcl
+      
+      - name: Validate Packer Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          target: packer/ami.pkr.hcl
+          
+      - name: Build AMI
+        if: success()
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build 
+          target: packer/ami.pkr.hcl
+          arguments: '-var "artifacts_source=./webapp.zip" -color=false -on-error=abort'
+        env:
+          PACKER_LOG: 1
+        
+      

@@ -49,4 +49,4 @@ Step 4: Check the Database after each and every API is called to see the status 
 
 Test the api with the above HTTPs status code.
 
-Please create a pull request with a detailed description of changes.
+Please create a pull request with a detailed description.

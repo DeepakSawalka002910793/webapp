@@ -26,10 +26,8 @@ jobs:
         run: zip -r webapp.zip ./ -x '*.git*'
       
       - name: Packer Init
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: init
-          target: packer/packer-debian.pkr.hcl
+        run: packer init packer-debian.pkr.hcl || exit 1
+        working-directory: packer
       
       - name: Validate Packer Template
         run: packer validate packer-debian.pkr.hcl || (echo "Packer template validation failed!" && exit 1)
@@ -37,10 +35,8 @@ jobs:
           
       - name: Build AMI
         if: success()
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: build 
-          target: packer/packer-debian.pkr.hcl
+          run: packer build packer-debian.pkr.hcl || (echo "Packer Build failed!" && exit 1)
+          working-directory: packer
           arguments: '-color=false -on-error=abort -var-file=dev.auto.pkrvars.hcl'
         env:
           PACKER_LOG: 1

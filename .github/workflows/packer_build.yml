@@ -29,20 +29,20 @@ jobs:
         uses: hashicorp/packer-github-actions@master
         with:
           command: init
-          target: packer/ami.pkr.hcl
+          target: packer/packer-debian.pkr.hcl
       
       - name: Validate Packer Template
         uses: hashicorp/packer-github-actions@master
         with:
           command: validate
-          target: packer/ami.pkr.hcl
+          target: packer/packer-debian.pkr.hcl
           
       - name: Build AMI
         if: success()
         uses: hashicorp/packer-github-actions@master
         with:
           command: build 
-          target: packer/ami.pkr.hcl
+          target: packer/packer-debian.pkr.hcl
           arguments: '-var "artifacts_source=./webapp.zip" -color=false -on-error=abort'
         env:
           PACKER_LOG: 1

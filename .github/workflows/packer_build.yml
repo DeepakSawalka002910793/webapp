@@ -23,7 +23,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Build application artifact
-        run: zip -r app.zip ./ -x '*.git*'
+        run: zip -r webapp.zip ./ -x '*.git*'
       
       - name: Packer Init
         uses: hashicorp/packer-github-actions@master
@@ -43,7 +43,7 @@ jobs:
         with:
           command: build 
           target: packer/packer-debian.pkr.hcl
-          arguments: '-var "artifacts_source=./webapp.zip" -color=false -on-error=abort'
+          arguments: '-color=false -on-error=abort -var-file=dev.auto.pkrvars.hcl'
         env:
           PACKER_LOG: 1
         

@@ -21,20 +21,20 @@ sudo apt-get install -y mariadb-server
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 
-
-
 # Create the database and user, then grant permissions
 sudo mysql -u root <<EOF
 use mysql;
-update user set authentication_string=PASSWORD('${DBPASS}') where user='${DBUSER}';
+UPDATE mysql.user SET plugin='mysql_native_password' WHERE user='${DBUSER}';
+FLUSH PRIVILEGES;
+UPDATE mysql.user SET authentication_string=PASSWORD('${DBPASS}') WHERE user='${DBUSER}';
+FLUSH PRIVILEGES;
 GRANT ALL PRIVILEGES ON *.* TO '${DBUSER}'@'${DBHOST}' WITH GRANT OPTION;
 CREATE DATABASE IF NOT EXISTS ${DATABASE};
 GRANT ALL PRIVILEGES ON ${DATABASE}.* TO '${DBUSER}'@'${DBHOST}';
 FLUSH PRIVILEGES;
 EOF
 
-#sudo mysqladmin -u ${DBUSER} password ${DBPASS}
-#mysqladmin -u ${DBUSER} --password=${DBPASS} --host=${DBHOST} --port=${DBPORT} create ${DATABASE}
+# Restart MariaDB to apply the changes
 sudo systemctl restart mariadb
 
 # Install unzip if not installed

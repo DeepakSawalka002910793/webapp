@@ -26,7 +26,7 @@ db.sequelize.sync({force: false})
 
       // Check if the data load was successful
       if (this.statusCode === 201) {
-        //console.log('Data loaded successfully into the database.'); 
+        console.log('Data loaded successfully into the database.'); 
       }
     }
   });

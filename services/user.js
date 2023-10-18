@@ -64,8 +64,7 @@ const newUser = async (req, res) => {
             // Send a response when done
             res.status(201).json({
                 message: 'Users added successfully'
-            });
-            
+            }); 
         }
     });
 }

@@ -67,7 +67,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Create a zip folder
-        run: zip -r webapp.zip .env ./ -x ".git"
+        run: zip -r webapp.zip ./ -x ".git"
 
       - name: Packer Init
         run: packer init packer-debian.pkr.hcl || exit 1

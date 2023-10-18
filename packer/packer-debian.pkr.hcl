@@ -95,6 +95,6 @@ build {
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"
     ]
-    script = "${script_file}"
+    script = "${var.script_file}"
   }
 }

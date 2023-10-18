@@ -12,11 +12,12 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
-      DBHOST: "localhost"
+      DBHOST: "127.0.0.1"
       PORT: 3000
       DBUSER: ${{ secrets.DB_USER }} # Using GitHub secrets
       DBPASS: ${{ secrets.DB_PASS }} # Using GitHub secrets
       DATABASE: "csye_assign5"
+      DBPORT: 3306
 
     services:
       mariadb:
@@ -47,6 +48,17 @@ jobs:
       - name: Run Jest tests -- --detectOpenHandles
         run: npm test -- --detectOpenHandles
 
+      - name: Create .env file
+        run: |
+          touch .env
+          echo "DBHOST=${{ env.DBHOST }}" >> .env
+          echo "PORT=${{ env.PORT }}" >> .env
+          echo "DBUSER=${{ env.DBUSER }}" >> .env
+          echo "DBPASS=${{ env.DBPASS }}" >> .env
+          echo "DATABASE=${{ env.DATABASE }}" >> .env
+          echo "DBPORT=${{ env.DBPORT }}" >> .env
+
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -54,14 +66,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Temporarily move .env file out of .git directory
-        run: mv .git/.env ./
-
       - name: Create a zip folder
         run: zip -r webapp.zip ./ -x ".git/*"
-
-      - name: Move .env file back to .git directory
-        run: mv .env .git/
 
       - name: Packer Init
         run: packer init packer-debian.pkr.hcl || exit 1

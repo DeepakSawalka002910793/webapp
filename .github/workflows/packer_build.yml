@@ -54,8 +54,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Build application artifact
-        run: zip -r webapp.zip ./ -x '.git'
+      - name: Temporarily move .env file out of .git directory
+        run: mv .git/.env ./
+
+      - name: Create a zip folder
+        run: zip -r webapp.zip ./ -x ".git/*"
+
+      - name: Move .env file back to .git directory
+        run: mv .env .git/
 
       - name: Packer Init
         run: packer init packer-debian.pkr.hcl || exit 1

@@ -5,10 +5,10 @@ sudo apt update -y
 sudo apt upgrade -y
 
 # Export database credentials and other env variables
-export DBHOST="localhost"
+export DBHOST="127.0.0.1"
 export DBUSER="root"
 export DBPASS="Root123#"
-export DATABASE="csye_assign3"
+export DATABASE="csye_assign5"
 export PORT=3000
 export DBPORT=3306
 
@@ -21,15 +21,33 @@ sudo apt-get install -y mariadb-server
 sudo systemctl start mariadb
 
 
-# Log in to MariaDB to create the user (if not exists), change the password, create a database, set permissions, and use the new database
 sudo mysql -u root <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${DBPASS}';
-CREATE DATABASE IF NOT EXISTS ${DATABASE};
-GRANT ALL PRIVILEGES ON ${DATABASE}.* TO 'root'@'localhost';
+-- Create user if not exists
+CREATE USER IF NOT EXISTS '${DBUSER}'@'${DBHOST}';
+
+-- Change the password with ALTER command
+ALTER USER '${DBUSER}'@'${DBHOST}' IDENTIFIED BY '${DBPASS}';
+
+-- Grant privileges
+GRANT ALL PRIVILEGES ON ${DATABASE}.* TO '${DBUSER}'@'${DBHOST}';
 FLUSH PRIVILEGES;
+
+-- Create and use database
+CREATE DATABASE IF NOT EXISTS ${DATABASE};
 USE ${DATABASE};
 EXIT;
 EOF
+
+
+# Log in to MariaDB to create the user (if not exists), change the password, create a database, set permissions, and use the new database
+#sudo mysql -u root <<EOF
+#ALTER USER 'root'@'localhost' IDENTIFIED BY '${DBPASS}';
+#CREATE DATABASE IF NOT EXISTS ${DATABASE};
+#GRANT ALL PRIVILEGES ON ${DATABASE}.* TO 'root'@'localhost';
+#FLUSH PRIVILEGES;
+#USE ${DATABASE};
+#EXIT;
+#EOF
 
 
 #sudo mysqladmin -u ${DBUSER} password ${DBPASS}

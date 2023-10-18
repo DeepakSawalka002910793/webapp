@@ -47,6 +47,11 @@ variable "artifacts_destination" {
   default = "/home/admin/webapp.zip"
 }
 
+variable "script_file" {
+  type    = string
+  default = "webapp.sh"
+}
+
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "debian-ami-1"
@@ -90,6 +95,6 @@ build {
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"
     ]
-    script = "./webapp.sh"
+    script = "${script_file}"
   }
 }

@@ -8,7 +8,7 @@ const helper = require('../config/helper');
 
 // Main function to add new users from CSV to the database
 const newUser = async (req, res) => {
-    const csvFilePath = process.env.CSV_FILE_PATH;
+    const csvFilePath = "users.csv";
 
     // Read the CSV file
     const file = fs.createReadStream(csvFilePath);

@@ -11,10 +11,42 @@ jobs:
   test_and_build:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      DBHOST: "localhost"
+      PORT: 3000
+      DBUSER: ${{ secrets.DB_USER }} # Using GitHub secrets
+      DBPASS: ${{ secrets.DB_PASS }} # Using GitHub secrets
+      DATABASE: "csye_assign5"
+
+    services:
+      mariadb:
+        image: mariadb:10.5
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASS }} # Using GitHub secrets
+          MYSQL_DATABASE: "csye_assign5"
+        ports:
+          - 3306:3306 # Corrected the port
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Github code checkout
         uses: actions/checkout@v3
-          
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v2 # Corrected the version
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Jest tests -- --detectOpenHandles
+        run: npm test -- --detectOpenHandles
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -23,21 +55,19 @@ jobs:
           aws-region: us-east-1
 
       - name: Build application artifact
-        run: zip -r webapp.zip ./ -x '*.git*'
-      
+        run: zip -r webapp.zip ./ -x '.git'
+
       - name: Packer Init
         run: packer init packer-debian.pkr.hcl || exit 1
         working-directory: packer
-      
+
       - name: Validate Packer Template
         run: packer validate packer-debian.pkr.hcl || (echo "Packer template validation failed!" && exit 1)
         working-directory: packer
-          
+
       - name: Build AMI
         if: success()
         run: packer build -color=false -on-error=abort -var-file=dev.auto.pkrvars.hcl packer-debian.pkr.hcl || (echo "Packer Build failed!" && exit 1)
         working-directory: packer
         env:
           PACKER_LOG: 1
-        
-      

@@ -14,8 +14,8 @@ jobs:
     env:
       DBHOST: "127.0.0.1"
       PORT: 3000
-      DBUSER: ${{ secrets.DB_USER }} # Using GitHub secrets
-      DBPASS: ${{ secrets.DB_PASS }} # Using GitHub secrets
+      DBUSER: "root" 
+      DBPASS: "Root123#"
       DATABASE: "csye_assign5"
       DBPORT: 3306
 
@@ -23,7 +23,7 @@ jobs:
       mariadb:
         image: mariadb:10.5
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASS }} # Using GitHub secrets
+          MYSQL_ROOT_PASSWORD: "Root123#"
           MYSQL_DATABASE: "csye_assign5"
         ports:
           - 3306:3306 # Corrected the port
@@ -67,7 +67,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Create a zip folder
-        run: zip -r webapp.zip ./ -x ".git" ".gitignore" ".github/"
+        run: zip -r webapp.zip . -x ".git/*" ".gitignore" ".github/*"
 
       - name: Packer Init
         run: packer init packer-debian.pkr.hcl || exit 1

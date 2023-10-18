@@ -33,7 +33,7 @@ const newUser = async (req, res) => {
                 // Check if the user already exists
                 const existingUser = await db.user.findOne({ where: { email }});
                 if (existingUser) {
-                    console.log('User with the same email already exists.'); // Logging for debugging
+                    //console.log('User with the same email already exists.'); // Logging for debugging
                     continue;  // Skip to the next iteration
                 }
 
@@ -50,7 +50,7 @@ const newUser = async (req, res) => {
                         account_created: new Date(),
                         account_updated: new Date()
                     });
-                    console.log('User added successfully.');  // Logging for debugging
+                    //console.log('User added successfully.');  // Logging for debugging
             
                 } catch (err) {
                     console.error("DB Error", err);  // Changed to console.error for error logging
@@ -63,7 +63,7 @@ const newUser = async (req, res) => {
            
             // Send a response when done
             res.status(201).json({
-                message: 'Users added successfully'
+                //message: 'Users added successfully'
             }); 
         }
     });

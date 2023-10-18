@@ -20,12 +20,9 @@ sudo apt-get install -y nodejs
 sudo apt-get install -y mariadb-server
 sudo systemctl start mariadb
 
-# Secure the installation, remove anonymous users, disallow remote root login, and remove test database
-sudo mysql_secure_installation
 
 # Log in to MariaDB to create the user (if not exists), change the password, create a database, set permissions, and use the new database
-sudo mysql -u root -p <<EOF
-CREATE USER IF NOT EXISTS 'root'@'localhost';
+sudo mysql -u root <<EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${DBPASS}';
 CREATE DATABASE IF NOT EXISTS ${DATABASE};
 GRANT ALL PRIVILEGES ON ${DATABASE}.* TO 'root'@'localhost';

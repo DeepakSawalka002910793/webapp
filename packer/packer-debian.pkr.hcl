@@ -7,7 +7,7 @@ packer {
   }
 }
 
-variable "aws_region"   {
+variable "aws_region" {
   type    = string
   default = "us-east-1"
 }
@@ -56,7 +56,7 @@ source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "debian-ami-1"
   ami_description = "CSYE6225_ASSIGN5_AMI "
-  ami_users       = "${var.ami_users}"
+  ami_users       = "${var.ami_user}"
   ami_regions = [
     "us-east-1",
   ]

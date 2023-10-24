@@ -18,6 +18,7 @@ jobs:
       DBPASS: ${{ secrets.DBPASS }}
       DATABASE: "csye6225"
       DBPORT: 3306
+      CSV_PATH: "../users.csv"
 
     services:
       mariadb:

@@ -12,7 +12,7 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
-      DBHOST: "127.0.0.1"
+      DBHOST: "localhost"
       PORT: 3000
       DBUSER: ${{ secrets.DBUSER }}
       DBPASS: ${{ secrets.DBPASS }}
@@ -23,7 +23,7 @@ jobs:
       mariadb:
         image: mariadb:10.5
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.PASS }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DBPASS }}
           MYSQL_DATABASE: "csye6225"
         ports:
           - 3306:3306 # Corrected the port

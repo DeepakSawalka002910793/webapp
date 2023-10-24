@@ -1,0 +1,13 @@
+[Unit]
+Description=Webapp
+After=network.target cloud-final.service
+Requires=cloud-final.service
+
+[Service]
+ExecStart=/usr/bin/npm run start
+WorkingDirectory=/home/admin/webapp
+Restart=always
+User=admin
+
+[Install]
+WantedBy=multi-user.target  

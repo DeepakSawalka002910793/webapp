@@ -11,6 +11,20 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:10.5
+        env:
+          MYSQL_ROOT_PASSWORD: "password"
+          MYSQL_DATABASE: "csye_assign5"
+        ports:
+          - 3306:3306  # Corrected the port
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3 

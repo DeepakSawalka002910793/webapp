@@ -1,7 +1,7 @@
 [Unit]
 Description=Webapp
-After=network.target cloud-final.service
-Requires=cloud-final.service
+After=network.target cloud-final.target
+Requires=cloud-final.target
 
 [Service]
 Type=Simple
@@ -12,4 +12,4 @@ RestartSec=3
 User=admin
 
 [Install]
-WantedBy=cloud-init.target  
+WantedBy=multi-user.target

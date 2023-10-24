@@ -4,14 +4,10 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - opened
 
 jobs:
   integration-test:
     runs-on: ubuntu-latest
-    environment:
-      name: staging
       
     env:
       DBHOST: "localhost"

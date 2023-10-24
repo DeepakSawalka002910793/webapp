@@ -22,16 +22,6 @@ variable "ssh_username" {
   default = "admin"
 }
 
-variable "vpc_id" {
-  type    = string
-  default = "vpc-0caf3fb1c7304aa0c"
-}
-
-variable "subnet_id" {
-  type    = string
-  default = "subnet-0c7a56dda145d78b4"
-}
-
 variable "ami_users" {
   type    = list(string)
   default = ["998931800090"]
@@ -41,6 +31,7 @@ variable "profile" {
   type    = string
   default = "dev"
 }
+
 
 variable "artifacts_source" {
   type    = string
@@ -75,8 +66,6 @@ source "amazon-ebs" "my-ami" {
   instance_type = "t2.micro"
   source_ami    = "${var.source_ami}"
   ssh_username  = "${var.ssh_username}"
-  subnet_id     = "${var.subnet_id}"
-  vpc_id        = "${var.vpc_id}"
   profile       = "${var.profile}"
 
   launch_block_device_mappings {

@@ -14,17 +14,17 @@ jobs:
     env:
       DBHOST: "127.0.0.1"
       PORT: 3000
-      DBUSER: "root" 
-      DBPASS: "Root123#"
-      DATABASE: "csye_assign5"
+      DBUSER: ${{ secrets.DBUSER }}
+      DBPASS: ${{ secrets.DBPASS }}
+      DATABASE: "csye6225"
       DBPORT: 3306
 
     services:
       mariadb:
         image: mariadb:10.5
         env:
-          MYSQL_ROOT_PASSWORD: "Root123#"
-          MYSQL_DATABASE: "csye_assign5"
+          MYSQL_ROOT_PASSWORD: ${{ secrets.PASS }}
+          MYSQL_DATABASE: "csye6225"
         ports:
           - 3306:3306 # Corrected the port
         options: >-
@@ -57,6 +57,7 @@ jobs:
           echo "DBPASS=${{ env.DBPASS }}" >> .env
           echo "DATABASE=${{ env.DATABASE }}" >> .env
           echo "DBPORT=${{ env.DBPORT }}" >> .env
+          echo "CSV_PATH=/home/admin/webapp/users.csv" >> .env
 
 
       - name: Configure AWS Credentials

@@ -4,9 +4,11 @@ After=network.target cloud-final.service
 Requires=cloud-final.service
 
 [Service]
+Type=Simple
 ExecStart=/usr/bin/npm run start
 WorkingDirectory=/home/admin/webapp
 Restart=always
+RestartSec=3
 User=admin
 
 [Install]

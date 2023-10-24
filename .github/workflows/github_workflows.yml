@@ -1,7 +1,7 @@
 name: gitworkflow
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
     types:
@@ -10,13 +10,22 @@ on:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
+    env:
+      DBHOST: "localhost"
+      PORT: 3000
+      DBUSER: ${{ secrets.DBUSER }}
+      DBPASS: ${{ secrets.DBPASS }}
+      DATABASE: "csye6225"
+      DBPORT: 3306                         
+      CSV_PATH: "../users.csv"
+    
 
     services:
       mariadb:
         image: mariadb:10.5
         env:
-          MYSQL_ROOT_PASSWORD: "password"
-          MYSQL_DATABASE: "csye_assign5"
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DBPASS }}
+          MYSQL_DATABASE: "csye6225"
         ports:
           - 3306:3306  # Corrected the port
         options: >-
@@ -27,15 +36,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3  # Corrected the version
 
       - name: Use Node.js 18
-        uses: actions/setup-node@v2 
+        uses: actions/setup-node@v2  # Corrected the version
         with:
           node-version: "18"
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run Jest tests without DB
-        run: npm test
+      - name: Run Jest tests -- --detectOpenHandles
+        run: npm test -- --detectOpenHandles 

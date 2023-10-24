@@ -26,8 +26,8 @@ npm install
 
 # Copy the systemd service file and start the service
 echo "Setting up and starting the webapp service"
-sudo cp /home/admin/webapp/packer/webapp.service /etc/systemd/system
-systemctl daemon-reload
+sudo cp /home/admin/webapp/packer/webapp.service /lib/systemd/system
+sudo systemctl daemon-reload
 sudo systemctl start webapp.service
 sudo systemctl enable webapp.service
 

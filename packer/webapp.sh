@@ -28,8 +28,9 @@ npm install
 echo "Setting up and starting the webapp service"
 sudo cp webapp.service /etc/systemd/system
 systemctl daemon-reload
-sudo systemctl enable webapp.service
 sudo systemctl start webapp.service
+sudo systemctl enable webapp.service
+
 
 echo "Script executed successfully!"
 

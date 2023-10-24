@@ -10,6 +10,9 @@ on:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
+    environment:
+      name: env
+      
     env:
       DBHOST: "localhost"
       PORT: 3000

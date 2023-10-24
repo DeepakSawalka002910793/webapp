@@ -37,6 +37,11 @@ variable "ami_users" {
   default = ["998931800090"]
 }
 
+variable "profile" {
+  type    = string
+  default = "dev"
+}
+
 variable "artifacts_source" {
   type    = string
   default = "../webapp.zip"
@@ -72,7 +77,7 @@ source "amazon-ebs" "my-ami" {
   ssh_username  = "${var.ssh_username}"
   subnet_id     = "${var.subnet_id}"
   vpc_id        = "${var.vpc_id}"
-  profile       = "dev"
+  profile       = "${var.profile}"
 
   launch_block_device_mappings {
     delete_on_termination = true

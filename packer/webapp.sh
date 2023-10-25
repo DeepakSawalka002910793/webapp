@@ -33,6 +33,7 @@ npm install
 echo "Setting up the webapp service"
 sudo cp /home/admin/webapp/packer/webapp.service /etc/systemd/system
 
+
 # Give ownership of the webapp directory to ec2-user
 echo "Changing ownership of the webapp directory"
 sudo chown -R ec2-user:ec2-group /home/admin/webapp
@@ -43,6 +44,7 @@ echo "Starting the webapp service"
 sudo systemctl daemon-reload
 sudo systemctl enable webapp
 sudo systemctl start webapp
+sudo systemctl restart webapp
 
 echo "Script executed successfully!"
 

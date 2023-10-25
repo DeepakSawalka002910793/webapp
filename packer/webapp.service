@@ -1,6 +1,6 @@
 [Unit]
 Description=Webapp
-After=network.target cloud-init.target
+After=network.target cloud-final.service
 
 [Service]
 Type=Simple

@@ -17,11 +17,11 @@ sudo apt-get install unzip -y
 
 # Create webapp directory under /home if it doesn't exist
 echo "Creating webapp directory"
-sudo mkdir -p /home/webapp
+sudo mkdir -p /home/ec2-user
 
 # Unzip the web application
 echo "Unzipping the web application"
-sudo unzip webapp.zip -d /home/webapp
+sudo unzip webapp.zip -d /home/ec2-user
 
 
 # Creating group and user for running the webapp
@@ -32,11 +32,11 @@ sudo useradd -s /bin/false -g ec2-group ec2-user
 
 # Give ownership of the webapp directory to ec2-user
 echo "Changing ownership of the webapp directory"
-sudo chown -R ec2-user:ec2-group /home/webapp
+sudo chown -R ec2-user:ec2-group /home/ec2-user
 
 # Navigate to the webapp directory and install node modules
 echo "Installing node modules"
-cd /home/webapp/webapp
+cd /home/ec2-user/webapp
 sudo -u ec2-user npm install
 
 # Copy the systemd service file

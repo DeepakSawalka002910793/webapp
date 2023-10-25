@@ -19,9 +19,11 @@ sudo apt-get install unzip -y
 echo "Creating webapp directory"
 sudo mkdir -p /home/ec2-user
 
+sudo cd /home/ec2-user
+
 # Unzip the web application
 echo "Unzipping the web application"
-sudo unzip webapp.zip -d /home/ec2-user
+sudo unzip webapp.zip 
 
 
 # Creating group and user for running the webapp

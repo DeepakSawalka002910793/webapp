@@ -19,11 +19,9 @@ sudo apt-get install unzip -y
 echo "Creating webapp directory"
 sudo mkdir -p /home/ec2-user
 
-sudo cd /home/ec2-user
-
 # Unzip the web application
 echo "Unzipping the web application"
-sudo unzip webapp.zip 
+sudo unzip webapp.zip -d /home/ec2-user/webapp
 
 
 # Creating group and user for running the webapp
@@ -34,7 +32,7 @@ sudo useradd -s /bin/false -g ec2-group ec2-user
 
 # Give ownership of the webapp directory to ec2-user
 echo "Changing ownership of the webapp directory"
-sudo chown -R ec2-user:ec2-group /home/ec2-user
+sudo chown -R ec2-user:ec2-group /home/ec2-user/webapp
 
 # Navigate to the webapp directory and install node modules
 echo "Installing node modules"

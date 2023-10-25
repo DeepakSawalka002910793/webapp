@@ -30,7 +30,7 @@ sudo chown -R ec2-user:ec2-group /home/admin/webapp
 
 # Navigate to the webapp directory and install node modules
 echo "Installing node modules"
-cd webapp
+cd /home/admin/webapp
 sudo -u ec2-user npm install
 
 

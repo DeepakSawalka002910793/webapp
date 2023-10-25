@@ -12,10 +12,6 @@ Restart=always
 RestartSec=3
 User=ec2-user
 Group=ec2-group
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=ec2-user
-
 
 [Install]
 WantedBy=cloud-init.target

@@ -4,11 +4,18 @@ After=network.target cloud-final.service
 
 [Service]
 Type=Simple
+Environment=PORT=3000
+Environment=CSV_PATH="/home/admin/webapp/users.csv"
 ExecStart=/usr/bin/npm run start
 WorkingDirectory=/home/admin/webapp
 Restart=always
 RestartSec=3
-User=admin
+User=ec2-user
+Group=ec2-group
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ec2-user
+
 
 [Install]
 WantedBy=cloud-init.target

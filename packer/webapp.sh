@@ -36,7 +36,7 @@ sudo chown -R ec2-user:ec2-group /home/webapp
 
 # Navigate to the webapp directory and install node modules
 echo "Installing node modules"
-cd /home/webapp
+cd /home/webapp/webapp
 sudo -u ec2-user npm install
 
 # Copy the systemd service file

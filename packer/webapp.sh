@@ -15,29 +15,35 @@ sudo apt-get install -y nodejs
 echo "Installing unzip"
 sudo apt-get install unzip -y
 
+# Create webapp directory under /home if it doesn't exist
+echo "Creating webapp directory"
+sudo mkdir -p /home/webapp
+
 # Unzip the web application
 echo "Unzipping the web application"
-unzip webapp.zip -d webapp
+sudo unzip webapp.zip -d /home/webapp
+
 
 # Creating group and user for running the webapp
 echo "Creating group and adding ec2 user"
 sudo groupadd ec2-group
 sudo useradd -s /bin/false -g ec2-group ec2-user
 
-# Navigate to the webapp directory and install node modules
-echo "Installing node modules"
-cd /home/admin/webapp
-npm install
-
-# Copy the systemd service file
-echo "Setting up the webapp service"
-sudo cp /home/admin/webapp/packer/webapp.service /etc/systemd/system
-
 
 # Give ownership of the webapp directory to ec2-user
 echo "Changing ownership of the webapp directory"
-sudo chown -R ec2-user:ec2-group /home/admin/webapp
-sudo chown -R ec2-user:ec2-group /etc/systemd/system/webapp.service
+sudo chown -R ec2-user:ec2-group /home/webapp
+
+# Navigate to the webapp directory and install node modules
+echo "Installing node modules"
+cd /home/webapp
+sudo -u ec2-user npm install
+
+# Copy the systemd service file
+echo "Setting up the webapp service"
+sudo cp /home/webapp/packer/webapp.service /etc/systemd/system
+sudo chown ec2-user:ec2-group /etc/systemd/system/webapp.service
+sudo chmod u+x /etc/systemd/system/webapp.service
 
 # Start the service
 echo "Starting the webapp service"
@@ -47,6 +53,9 @@ sudo systemctl start webapp
 sudo systemctl restart webapp
 
 echo "Script executed successfully!"
+
+
+
 
 
 

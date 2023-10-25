@@ -5,9 +5,9 @@ After=network.target cloud-final.service
 [Service]
 Type=Simple
 Environment=PORT=3000
-Environment=CSV_PATH="/home/webapp/webapp/users.csv"
+Environment=CSV_PATH="/home/ec2-user/webapp/users.csv"
 ExecStart=/usr/bin/npm run start
-WorkingDirectory=/home/webapp/webapp
+WorkingDirectory=/home/ec2-user/webapp
 Restart=always
 RestartSec=3
 User=ec2-user

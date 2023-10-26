@@ -29,17 +29,17 @@ echo "Creating group and adding ec2 user"
 sudo groupadd ec2-group
 sudo useradd -s /bin/false -g ec2-group ec2-user
 
+sudo chown -R ec2-user:ec2-group /home/ec2-user/webapp
+sudo chmod -R 755 /home/ec2-user/webapp
+
 # Navigate to the webapp directory and install node modules
 echo "Installing node modules"
 cd /home/ec2-user/webapp
-npm install
+sudo -u ec2-user npm install
 
 # Copy the systemd service file
 echo "Setting up the webapp service"
 sudo cp /home/webapp/packer/webapp.service /etc/systemd/system
-# Give ownership of the webapp directory to ec2-user
-echo "Changing ownership of the webapp directory"
-sudo chown -R ec2-user:ec2-group /home/ec2-user/webapp
 
 sudo chown ec2-user:ec2-group /etc/systemd/system/webapp.service
 sudo chmod u+x /etc/systemd/system/webapp.service

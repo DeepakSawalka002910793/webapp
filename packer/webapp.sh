@@ -15,47 +15,21 @@ sudo apt-get install -y nodejs
 echo "Installing unzip"
 sudo apt-get install unzip -y
 
-# Create webapp directory under /home if it doesn't exist
-echo "Creating webapp directory"
-sudo mkdir -p /home/ec2-user
-
 # Unzip the web application
 echo "Unzipping the web application"
-sudo unzip webapp.zip -d /home/ec2-user/webapp
-
-
-# Creating group and user for running the webapp
-echo "Creating group and adding ec2 user"
-sudo groupadd ec2-group
-sudo useradd -s /bin/false -g ec2-group ec2-user
-
-sudo chown -R ec2-user:ec2-group /home/ec2-user/webapp
-sudo chmod -R 755 /home/ec2-user/webapp
+unzip webapp.zip -d webapp
 
 # Navigate to the webapp directory and install node modules
 echo "Installing node modules"
-cd /home/ec2-user/webapp
-sudo -u ec2-user npm install
+cd webapp
+npm install
 
-# Copy the systemd service file
-echo "Setting up the webapp service"
-sudo cp /home/webapp/packer/webapp.service /etc/systemd/system
-
-sudo chown ec2-user:ec2-group /etc/systemd/system/webapp.service
-sudo chmod u+x /etc/systemd/system/webapp.service
-
-# Start the service
-echo "Starting the webapp service"
+# Copy the systemd service file and start the service
+echo "Setting up and starting the webapp service"
+sudo cp /home/admin/webapp/packer/webapp.service /etc/systemd/system
 sudo systemctl daemon-reload
-sudo systemctl enable webapp
-sudo systemctl start webapp
-sudo systemctl restart webapp
+sudo systemctl start webapp.service
+sudo systemctl enable webapp.service
+
 
 echo "Script executed successfully!"
-
-
-
-
-
-
-

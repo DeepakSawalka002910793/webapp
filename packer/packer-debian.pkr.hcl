@@ -85,6 +85,10 @@ build {
   }
 
   provisioner "shell" {
+    inline = ["chmod +x ${var.artifacts_destination}"]
+  }
+
+  provisioner "shell" {
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"

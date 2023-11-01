@@ -173,6 +173,10 @@ const deleteAssignment = async (req, res) => {
 
 const getAssignmentList = async(req, res) => {
 
+    if (req._body) {
+        return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
+    }
+
     try {
         // Token validation and user attachment should be done in middleware
         const userId = req.user && req.user.id;  // Extract user ID from the token
@@ -208,7 +212,7 @@ const getAssignmentDetails = async(req, res) => {
     
 
     if (req._body) {
-        return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send("Bad Request..");
+        return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 
     try {

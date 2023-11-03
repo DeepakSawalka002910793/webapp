@@ -1,6 +1,6 @@
 const app = require('../server');
 const request = require("supertest");
-const helper = require('./config/helper')
+const helper = require('../config/helper')
 
 describe("GET /healthz ", () => {
 

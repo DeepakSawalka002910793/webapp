@@ -74,12 +74,5 @@ app.use((err, req, res, next) => {
   return res.status(400).send();
 })
 
-process.on('terminate', () => {
-  process.on('terminate', () => {
-    // run after all terminate handlers that were added before exit
-    console.log("exit")
-    helper.statsdClient.socket.close();
-  });
-});
 
 module.exports = app;

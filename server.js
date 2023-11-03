@@ -26,13 +26,13 @@ db.sequelize.sync({force: false})
 
       // Check if the data load was successful
       if (this.statusCode === 201) {
-        console.log('Data loaded successfully into the database.'); 
+        logger.info('Data loaded successfully into the database.'); 
       }
     }
   });
 })
 .catch((error) => {
-  console.log("Database setup failed.",error);
+  logger.error("Database setup failed",error);
 });
 
 app.get('/healthz', function(req, res) {
@@ -46,6 +46,8 @@ app.get('/healthz', function(req, res) {
     db.sequelize.authenticate()
       .then(() => {
         // If connected, send 200 status
+        helper.statsdClient.increment('health_counter');
+        logger.info("healthz is working fine");
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(200).send(); 
       })
@@ -71,4 +73,13 @@ app.use(methodOverride())
 app.use((err, req, res, next) => {
   return res.status(400).send();
 })
+
+process.on('terminate', () => {
+  process.on('terminate', () => {
+    // run after all terminate handlers that were added before exit
+    console.log("exit")
+    helper.statsdClient.socket.close();
+  });
+});
+
 module.exports = app;

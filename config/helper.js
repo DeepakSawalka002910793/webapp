@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const db = require('./dbSetup');
+const StatsD = require('node-statsd');
 const dotenv = require('dotenv');
+const statsdClient = new StatsD();
+
 dotenv.config();
 const secretKey = process.env.SECRET_KEY;
  // You should store it in an environment variable or other secure places
@@ -114,8 +117,7 @@ module.exports = {
     validateEmail,
     validUser,
     getDecryptedCreds,
-    pAuthCheck
-    
-    
+    pAuthCheck,
+    statsdClient  
 };
 

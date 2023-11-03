@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 const methodOverride = require('method-override');
 const logger = require("./logger/loggerindex");
 const { newUser } = require('./services/user');
-
+const helper = require('./config/helper')
 app.use(bodyParser.json());
 
 var userRoutes = require('./api-routes/routes');

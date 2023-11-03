@@ -2,6 +2,7 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 const methodOverride = require('method-override');
+const logger = require("./logger/loggerindex");
 const { newUser } = require('./services/user');
 
 app.use(bodyParser.json());

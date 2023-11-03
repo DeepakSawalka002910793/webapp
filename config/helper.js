@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const db = require('./dbSetup');
-const StatsD = require('node-statsd');
 const dotenv = require('dotenv');
+const StatsD = require('node-statsd');
 const statsdClient = new StatsD();
 
 dotenv.config();

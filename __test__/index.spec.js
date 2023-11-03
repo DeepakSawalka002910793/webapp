@@ -1,6 +1,6 @@
 const app = require('../server');
 const request = require("supertest");
-
+const helper = require('./config/helper')
 
 describe("GET /healthz ", () => {
 
@@ -10,4 +10,9 @@ describe("GET /healthz ", () => {
   });
 });
 
+afterAll(done => {
+  // Close the statsdClient socket to clean up the open handle
+  helper.statsdClient.close();
+  done(); // Call done to signal Jest that the cleanup is complete
+});
 

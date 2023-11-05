@@ -28,6 +28,7 @@ const getDecryptedCreds = (authHeader) => {
 const pAuthCheck = async (req, res, next) => {
   //Check if auth header is present and is a basic auth header.
   if (!req.headers.authorization || req.headers.authorization.indexOf("Basic ") === -1) {
+    logger.error("Header Auth missing - Unauthorized")
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -39,6 +40,7 @@ const pAuthCheck = async (req, res, next) => {
   let user = await validUser(eMail, pass);
 
   if (!eMail || !pass || !user) {
+    logger.error("Details of user are not correct - Unauthorized");
     return res.status(401).json({
       message: "Unauthorized",
     });
@@ -51,6 +53,7 @@ const pAuthCheck = async (req, res, next) => {
     //Check if user creds match the user at id.
     let dbCheck = await dbAssignVal(eMail, pass,id);
     if(dbCheck) {
+        logger.error(`Details of user incorrect- ${dbCheck}`);
         return res.status((dbCheck=='Forbidden')?403:404).json({
           message: dbCheck,
         });

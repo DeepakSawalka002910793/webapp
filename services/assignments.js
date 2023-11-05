@@ -2,7 +2,8 @@ const helper = require('../config/helper');
 const db = require('../config/dbSetup');
 
 const createNewAssignment = async (req, res) => { // Create new Assignment function
-
+    logger.info("Assignment Create (POST)");
+    helper.statsdClient.increment('POST_assigndetails');
     if(!req.body.name || 
         !req.body.points || 
         !req.body.num_of_attempts || 
@@ -62,6 +63,8 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
 
 const putAssignmentDetails = async (req, res) => {  
 
+    logger.info("Assignment Update (PUT)");
+    helper.statsdClient.increment('PUT_assigndetails');
     
     const userId = req.user.id;
     if (!userId) {

@@ -4,12 +4,13 @@ After=network.target cloud-final.service
 
 [Service]
 Type=Simple
+User=ec2-user
+Group=ec2-group
 ExecStart=/usr/bin/npm run start
 WorkingDirectory=/home/ec2-user/webapp
 Restart=always
 RestartSec=3
-User=ec2-user
-Group=ec2-group
+
 
 [Install]
 WantedBy=cloud-init.target

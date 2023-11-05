@@ -53,6 +53,7 @@ app.get('/healthz', function(req, res) {
       })
       .catch(() => {
         // If an error occurs, send a 503 error
+        logger.info("healthz is not working server error");
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(503).send();
       });
@@ -61,6 +62,7 @@ app.get('/healthz', function(req, res) {
 
 app.use('/healthz', (req, res) => {
   if (req.method !== 'GET') {
+    logger.info("Change the method to GET (Method not allowed)");
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(405).send();
   }   

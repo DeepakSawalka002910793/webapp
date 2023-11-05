@@ -24,6 +24,7 @@ const newUser = async (req, res) => {
 
                 // Validate user data
                 if (!first_name || !last_name || !email || !password ) {
+                    logger.info("Enter Valid User data")
                     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
                     return res.status(400).json({
                         message: "Bad request"
@@ -33,6 +34,7 @@ const newUser = async (req, res) => {
                 // Check if the user already exists
                 const existingUser = await db.user.findOne({ where: { email }});
                 if (existingUser) {
+                    logger.info("User with the same email already exists.")
                     console.log('User with the same email already exists.'); // Logging for debugging
                     continue;  // Skip to the next iteration
                 }
@@ -50,9 +52,11 @@ const newUser = async (req, res) => {
                         account_created: new Date(),
                         account_updated: new Date()
                     });
+                    logger.info("User added successfully.")
                     console.log('User added successfully.');  // Logging for debugging
             
                 } catch (err) {
+                    logger.error("DB error")
                     console.error("DB Error", err);  // Changed to console.error for error logging
                     return res.status(500).json({
                         message: "Internal server error",
@@ -61,6 +65,7 @@ const newUser = async (req, res) => {
                 }
             }
            
+            
             // Send a response when done
             res.status(201).json({
                 message: 'Users added successfully'

@@ -1,6 +1,6 @@
 const helper = require('../config/helper');
 const db = require('../config/dbSetup');
-const logger = require("../logger/loggerindex");
+const logger = require('../logger/loggerindex');
 
 const createNewAssignment = async (req, res) => { // Create new Assignment function
     logger.info("Assignment Create (POST)");

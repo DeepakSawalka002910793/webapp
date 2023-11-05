@@ -2,7 +2,7 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 const methodOverride = require('method-override');
-const logger = require("./logger/loggerindex");
+const logger = require('./logger/loggerindex');
 const { newUser } = require('./services/user');
 const helper = require('./config/helper')
 app.use(bodyParser.json());
@@ -26,13 +26,13 @@ db.sequelize.sync({force: false})
 
       // Check if the data load was successful
       if (this.statusCode === 201) {
-        logger.info('Data loaded successfully into the database.'); 
+        logger.info('Data loaded successfully into the database'); 
       }
     }
   });
 })
 .catch((error) => {
-  logger.error("Database setup failed",error);
+  logger.error("Database setup failed", + error);
 });
 
 app.get('/healthz', function(req, res) {
@@ -53,7 +53,7 @@ app.get('/healthz', function(req, res) {
       })
       .catch(() => {
         // If an error occurs, send a 503 error
-        logger.info("healthz is not working server error");
+        logger.error("healthz is not working server unavailable");
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(503).send();
       });

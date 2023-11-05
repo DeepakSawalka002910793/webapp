@@ -15,9 +15,7 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
         || (typeof req.body.name === 'string' && req.body.name.trim() === '') || Object.keys(req.body).length > 4))
          {
             logger.info("Enter a Valid request");
-            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({
-                message: "Bad request"
-            });
+            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         } 
         
 
@@ -25,9 +23,7 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
         let assignmentObj = await db.assignment.findOne({where:{name:req.body.name}});
         if(assignmentObj) {
             logger.info("Assignment already exists");
-            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({
-                message: "Bad request! Assignment already exists."
-            });
+            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
 
         let {eMail, pass} = helper.getDecryptedCreds(req.headers.authorization);
@@ -56,21 +52,20 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
         logger.info("Assignment Created Successfully!!");
         return res.status(201).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);
     }catch(err) {
-        logger.error("DB Error",err);
-        console.log("DB Error ", err);
+        logger.error("Server error" +  err);
         res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 }
 
 const putAssignmentDetails = async (req, res) => {  
 
-    logger.info("Assignment Update (PUT) -", req.params.id);
+    logger.info(`Assignment Update (PUT) - ${req.params.id}`);
     helper.statsdClient.increment('PUT_assigndetails');
     
     const userId = req.user.id;
     if (!userId) {
         logger.info("Unauthorised user");
-        return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Unauthorized' });
+        return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
     
     if (Object.keys(req.body).length === 0) {
@@ -87,10 +82,8 @@ const putAssignmentDetails = async (req, res) => {
         (typeof req.body.name === 'number' || !isNaN(parseFloat(req.body.name)) && isFinite(req.body.name))||
         (typeof req.body.name === 'string' && req.body.name.trim() === '')  ||
         Object.keys(req.body).length > 4) {
-            logger.info("Bad request");
-            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({
-                message: "Bad request"
-            });
+            logger.info("Enter a valid request");
+            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }  
     
         let assignId = req.params.id;
@@ -103,19 +96,19 @@ const putAssignmentDetails = async (req, res) => {
         // Check if the assignment exists
         if (!assignment) {
             logger.info("Assignment Already exists");
-            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Assignment not found" });
+            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
 
         const userId = req.user && req.user.id;
         if (!userId) {
             logger.info("Unauthorised user");
-            return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Unauthorized' });
+            return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
 
         //Check if the user has permission to update the assignment (depends on your use case)
          if (assignment.owner_user_id !== userId) {
-            logger.info("Invalid User");
-            return res.status(403).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Forbidden' });
+            logger.info("Invalid, User does not have necessary permissions to Update");
+            return res.status(403).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
          }
 
         // Update the assignment
@@ -133,23 +126,26 @@ const putAssignmentDetails = async (req, res) => {
         return res.status(204).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();  // Return 204 on successful update
 
     } catch (err) {
-        logger.error("Database error",err);
-        console.error("Database error: ", err);
-        return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Internal server error" });  // Use 500 for server errors, not 400
+        logger.error("Server error" +  err);
+        return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();  // Use 500 for server errors
     }}
    
 
 const deleteAssignment = async (req, res) => {
 
+    logger.info(`Assignment Delete (DELETE) - ${req.params.id}`);
+    helper.statsdClient.increment('DELETE_assigndetails');
     // So, make sure the user is authenticated and authorized to delete the assignment.
     const userId = req.user && req.user.id;  
     if (!userId) {
-        return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Unauthorized' });
+        logger.info("Unauthorised user");
+        return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 
 
     if (req._body) {  
-        return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send("Bad Request");
+        logger.info("Request Body should be empty");
+        return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 
     const assignId = req.params.id;  // Extract assignment ID from the request parameters
@@ -159,12 +155,14 @@ const deleteAssignment = async (req, res) => {
         const assignment = await db.assignment.findByPk(assignId);
 
         if (!assignment) {
-            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Assignment not found" });
+            logger.info("Assignment not found");
+            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
 
         // Check if the user has permission to delete the assignment
         if (assignment.owner_user_id !== userId) {
-           return res.status(403).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Forbidden' });
+            logger.info("Invalid, User does not have necessary permissions to Delete");
+            return res.status(403).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
          }
 
         await db.assignment.destroy({
@@ -173,19 +171,23 @@ const deleteAssignment = async (req, res) => {
 
             }
         });
-
+        logger.info("Assignment Deleted Successfully");
         return res.status(204).set('Cache-Control', 'no-store, no-cache, must-revalidate').send()  // Return 204 No Content on successful deletion
 
     } catch (err) {
-        console.error("Database error: ", err);
-        return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Internal server error" }); // Use 500 for server errors
+        logger.error("Server error" + err);
+        return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send(); // Use 500 for server errors
     }
    
 }
 
 const getAssignmentList = async(req, res) => {
 
+    logger.info(`GET Assignment List`);
+    helper.statsdClient.increment('GET_assignlist');
+
     if (req._body) {
+        logger.info("Request Body should be empty");
         return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 
@@ -193,12 +195,14 @@ const getAssignmentList = async(req, res) => {
         // Token validation and user attachment should be done in middleware
         const userId = req.user && req.user.id;  // Extract user ID from the token
         if (!userId) {
-            return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Unauthorized' });
+            logger.info("Unauthorised user");
+            return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
         const assignments = await db.assignment.findAll();  // This fetches all assignments
 
         if (!assignments || assignments.length === 0) {
-            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'No assignments found' });
+            logger.info("Assignment not found");
+            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
 
 
@@ -213,17 +217,22 @@ const getAssignmentList = async(req, res) => {
             assignment_updated: assignment.assignment_updated
            
         }));
+        logger.info("List of all Assignments is displayed successfully!!");
         return res.status(200).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result); 
     }catch(err) {
-        res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send("Bad Request");
-        console.log("DB Error ", err);
+        logger.error("Server error" + err);
+        res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
+        
     }
 }
 
 const getAssignmentDetails = async(req, res) => {
     
+    logger.info(`GET Assignment Details - ${req.params.id}`);
+    helper.statsdClient.increment('GET_assigndetails');
 
     if (req._body) {
+        logger.info("Request Body should be empty");
         return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 
@@ -231,17 +240,19 @@ const getAssignmentDetails = async(req, res) => {
         // Token validation and user attachment should be done in middleware
         const userId = req.user && req.user.id;  // Extract user ID from the token
         if (!userId) {
-            return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: 'Unauthorized' });
+            logger.info("Unauthorised user");
+            return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
 
         let assignId = req.params.id;  // Extract assignment ID from the request parameters
 
-        const assignment = await db.assignment.findByPk(assignId); //findOne({where: { id: assigntId}}); 
-             // Added userId to the where clause for extra security
+        const assignment = await db.assignment.findByPk(assignId);  
+            
         
 
         if (!assignment) {
-            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').json({ message: "Assignment not found" });
+            logger.info("Assignment not found");
+            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
         
         const result = {
@@ -253,11 +264,11 @@ const getAssignmentDetails = async(req, res) => {
             assignment_created: assignment.dataValues.assignment_created,
             assignment_updated: assignment.dataValues.assignment_updated,
         };
-
+        logger.info("The required assignment is displayed successfully!!");
         return res.status(200).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);
     } catch (err) {
-        console.error("Database error: ", err);
-        return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send("Bad request !!");
+        logger.error("Server error" + err);
+        return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 }
     

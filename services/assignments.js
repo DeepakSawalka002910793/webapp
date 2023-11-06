@@ -144,7 +144,7 @@ const deleteAssignment = async (req, res) => {
 
 
     if (req._body) {  
-        logger.error({method: "DELETE", uri: "/v1/assignments/" + req.params.id, statusCode: 400, message:"Request body is empty"});
+        logger.error({method: "DELETE", uri: "/v1/assignments/" + req.params.id, statusCode: 400, message:"Request body should be empty"});
         return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 
@@ -187,7 +187,7 @@ const getAssignmentList = async(req, res) => {
     helper.statsdClient.increment('GET_assignlist');
 
     if (req._body) {
-        logger.error({method: "GET", uri: "/v1/assignments", statusCode: 400, message:"Request body is empty"});
+        logger.error({method: "GET", uri: "/v1/assignments", statusCode: 400, message:"Request body should be empty"});
         return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 
@@ -232,7 +232,7 @@ const getAssignmentDetails = async(req, res) => {
     helper.statsdClient.increment('GET_assigndetails');
 
     if (req._body) {
-        logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 400, message:"Request body is empty"});
+        logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 400, message:"Request body should be empty"});
         return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
     }
 

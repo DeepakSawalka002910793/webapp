@@ -26,19 +26,20 @@ db.sequelize.sync({force: false})
 
       // Check if the data load was successful
       if (this.statusCode === 201) {
-        logger.info('Data loaded successfully into the database'); 
+        logger.info({message:'Data loaded successfully into the database'}); 
       }
     }
   });
 })
 .catch((error) => {
-  logger.error("Database setup failed", + error);
+  logger.error({message:"Database setup failed" + error});
 });
 
 app.get('/healthz', function(req, res) {
 
   if(Object.keys(req.body).length !== 0 || JSON.stringify(req.body) !== '{}' || Object.keys(req.query).length > 0) {
     // Send 400 error if the body is not empty
+    logger.error({message:"Enter valid request body and no query params"});
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(400).send();
   } else {
@@ -46,14 +47,14 @@ app.get('/healthz', function(req, res) {
     db.sequelize.authenticate()
       .then(() => {
         // If connected, send 200 status
-        helper.statsdClient.increment('health_counter');
-        logger.info("healthz is working fine");
+        helper.statsdClient.increment('healthz_counter');
+        logger.info({message:"healthz is working fine"});
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(200).send(); 
       })
       .catch(() => {
         // If an error occurs, send a 503 error
-        logger.error("healthz is not working server unavailable");
+        logger.error({message:"healthz is not working server unavailable"});
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(503).send();
       });
@@ -62,7 +63,7 @@ app.get('/healthz', function(req, res) {
 
 app.use('/healthz', (req, res) => {
   if (req.method !== 'GET') {
-    logger.info("Change the method to GET (Method not allowed)");
+    logger.info({message:"Change the method to GET (Method not allowed)"});
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(405).send();
   }   

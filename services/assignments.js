@@ -3,7 +3,7 @@ const db = require('../config/dbSetup');
 const logger = require('../logger/loggerindex');
 
 const createNewAssignment = async (req, res) => { // Create new Assignment function
-    logger.info({method: "POST", uri: "/v1/assignments"});
+
     helper.statsdClient.increment('POST_assigndetails');
     if(!req.body.name || 
         !req.body.points || 
@@ -59,7 +59,6 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
 
 const putAssignmentDetails = async (req, res) => {  
 
-    logger.info({method: "PUT", uri: "/v1/assignments/" + req.params.id});
     helper.statsdClient.increment('PUT_assigndetails');
     
     const userId = req.user.id;
@@ -133,7 +132,6 @@ const putAssignmentDetails = async (req, res) => {
 
 const deleteAssignment = async (req, res) => {
 
-    logger.info({method: "DELETE", uri: "/v1/assignments/" + req.params.id});
     helper.statsdClient.increment('DELETE_assigndetails');
     // So, make sure the user is authenticated and authorized to delete the assignment.
     const userId = req.user && req.user.id;  
@@ -183,7 +181,6 @@ const deleteAssignment = async (req, res) => {
 
 const getAssignmentList = async(req, res) => {
 
-    logger.info({method: "GET", uri: "/v1/assignments"});
     helper.statsdClient.increment('GET_assignlist');
 
     if (req._body) {
@@ -228,7 +225,7 @@ const getAssignmentList = async(req, res) => {
 
 const getAssignmentDetails = async(req, res) => {
     
-    logger.info({method: "GET", uri: "/v1/assignments/" + req.params.id});
+    
     helper.statsdClient.increment('GET_assigndetails');
 
     if (req._body) {

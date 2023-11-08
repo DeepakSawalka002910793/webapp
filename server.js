@@ -37,6 +37,7 @@ db.sequelize.sync({force: false})
 
 app.get('/healthz', function(req, res) {
 
+  helper.statsdClient.increment('healthz_counter');
   if(Object.keys(req.body).length !== 0 || JSON.stringify(req.body) !== '{}' || Object.keys(req.query).length > 0) {
     // Send 400 error if the body is not empty
     logger.error({message:"Enter valid request body and no query params"});
@@ -47,7 +48,6 @@ app.get('/healthz', function(req, res) {
     db.sequelize.authenticate()
       .then(() => {
         // If connected, send 200 status
-        helper.statsdClient.increment('healthz_counter');
         logger.info({message:"healthz is working fine"});
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(200).send(); 
@@ -62,6 +62,7 @@ app.get('/healthz', function(req, res) {
 });
 
 app.use('/healthz', (req, res) => {
+  helper.statsdClient.increment('healthz_counter');
   if (req.method !== 'GET') {
     logger.info({message:"Change the method to GET (Method not allowed)"});
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');

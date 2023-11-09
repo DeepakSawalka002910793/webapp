@@ -64,7 +64,7 @@ app.get('/healthz', function(req, res) {
 app.use('/healthz', (req, res) => {
   helper.statsdClient.increment('healthz_counter');
   if (req.method !== 'GET') {
-    logger.info({message:"Change the method to GET (Method not allowed)"});
+    logger.error({message:"Change the method to GET (Method not allowed)"});
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(405).send();
   }   

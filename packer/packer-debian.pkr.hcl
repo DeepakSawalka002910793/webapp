@@ -43,6 +43,15 @@ variable "artifacts_destination" {
   default = "/home/admin/webapp.zip"
 }
 
+variable "cloudwatch_source" {
+  type    = string
+  default = "/home/ec2-user/webapp/cloud-watch/config.json"
+}
+
+variable "cloudwatch_destination" {
+  type    = string
+  default = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+
 variable "script_file" {
   type    = string
   default = "webapp.sh"
@@ -50,7 +59,7 @@ variable "script_file" {
 
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
-  ami_name        = "debian-ami"
+  ami_name        = "debian"
   ami_description = "CSYE6225_ASSIGN6_AMI "
   ami_users       = "${var.ami_users}"
   ami_regions = [
@@ -82,6 +91,11 @@ build {
   provisioner "file" {
     source      = "${var.artifacts_source}"
     destination = "${var.artifacts_destination}"
+  }
+
+  provisioner "file" {
+    source      = "${var.cloudwatch_source}"
+    destination = "${var.cloudwatch_destination}"
   }
 
   provisioner "shell" {

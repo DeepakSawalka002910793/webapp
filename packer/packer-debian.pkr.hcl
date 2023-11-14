@@ -51,6 +51,7 @@ variable "cloudwatch_source" {
 variable "cloudwatch_destination" {
   type    = string
   default = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+}
 
 variable "script_file" {
   type    = string

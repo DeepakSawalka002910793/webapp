@@ -45,7 +45,7 @@ variable "artifacts_destination" {
 
 variable "cloudwatch_source" {
   type    = string
-  default = "/home/ec2-user/webapp/cloud-watch/config.json"
+  default = "../cloud-watch/config.json"
 }
 
 variable "cloudwatch_destination" {
@@ -94,6 +94,11 @@ build {
     destination = "${var.artifacts_destination}"
   }
 
+  provisioner "file" {
+    source      = "${var.cloudwatch_source}"
+    destination = "${var.cloudwatch_destination}"
+  }
+
   provisioner "shell" {
     inline = ["chmod +x ${var.artifacts_destination}"]
   }
@@ -106,8 +111,5 @@ build {
     script = "${var.script_file}"
   }
 
-  provisioner "file" {
-    source      = "${var.cloudwatch_source}"
-    destination = "${var.cloudwatch_destination}"
-  }
+  
 }

@@ -94,11 +94,6 @@ build {
     destination = "${var.artifacts_destination}"
   }
 
-  provisioner "file" {
-    source      = "${var.cloudwatch_source}"
-    destination = "${var.cloudwatch_destination}"
-  }
-
   provisioner "shell" {
     inline = ["chmod +x ${var.artifacts_destination}"]
   }
@@ -111,5 +106,9 @@ build {
     script = "${var.script_file}"
   }
 
+  provisioner "file" {
+    source      = "${var.cloudwatch_source}"
+    destination = "${var.cloudwatch_destination}"
+  }
 
 }

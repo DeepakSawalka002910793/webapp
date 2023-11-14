@@ -111,5 +111,5 @@ build {
     script = "${var.script_file}"
   }
 
-  
+
 }

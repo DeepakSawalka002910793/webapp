@@ -40,7 +40,7 @@ app.get('/healthz', function(req, res) {
   helper.statsdClient.increment('healthz_counter');
   if(Object.keys(req.body).length !== 0 || JSON.stringify(req.body) !== '{}' || Object.keys(req.query).length > 0) {
     // Send 400 error if the body is not empty
-    logger.error({message:"Enter valid request body and no query params"});
+    logger.error({method: "GET", uri: "/healthz", statusCode: 400, message:"Enter valid request body and no query params"});
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(400).send();
   } else {
@@ -48,13 +48,13 @@ app.get('/healthz', function(req, res) {
     db.sequelize.authenticate()
       .then(() => {
         // If connected, send 200 status
-        logger.info({message:"healthz is working fine"});
+        logger.info({method: "GET", uri: "/healthz", statusCode: 200, message:"healthz is working fine"});
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(200).send(); 
       })
       .catch(() => {
         // If an error occurs, send a 503 error
-        logger.error({message:"healthz is not working server unavailable"});
+        logger.error({method: "GET", uri: "/healthz", statusCode: 503, message:"healthz is not working server unavailable"});
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
         res.status(503).send();
       });
@@ -64,7 +64,7 @@ app.get('/healthz', function(req, res) {
 app.use('/healthz', (req, res) => {
   helper.statsdClient.increment('healthz_counter');
   if (req.method !== 'GET') {
-    logger.error({message:"Change the method to GET (Method not allowed)"});
+    logger.error({ uri: "/healthz", statusCode: 405, message:"Change the method to GET (Method not allowed)"});
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(405).send();
   }   

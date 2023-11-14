@@ -43,20 +43,19 @@ sudo systemctl start webapp.service
 sudo systemctl enable webapp.service
 
 # Download and install the CloudWatch Agent
-echo "Downloading and installing the CloudWatch Agent..."
+echo "Downloading and installing the CloudWatch Agent"
 sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
 sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
 
 # Copy the CloudWatch Agent configuration file
-echo "Copying the CloudWatch Agent configuration file..."
-sudo cp /home/ec2-user/webapp/cloud-watch/config.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+#sudo cp /home/ec2-user/webapp/cloud-watch/config.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 
 # Configure the CloudWatch Agent to start on boot
-echo "Configuring the CloudWatch Agent to start on boot..."
+echo "Configuring the CloudWatch Agent to start on boot"
 sudo systemctl enable amazon-cloudwatch-agent
 
 # Start the CloudWatch Agent
-echo "Starting the CloudWatch Agent..."
+echo "Starting the CloudWatch Agent"
 sudo systemctl start amazon-cloudwatch-agent
 
 echo "Script executed successfully!"

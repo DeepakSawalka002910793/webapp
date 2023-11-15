@@ -47,7 +47,7 @@ echo "Downloading and installing the CloudWatch Agent"
 sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
 sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
 
-# Move the CloudWatch Agent configuration file
+# Move the CloudWatch Agent configuration file from/tmp
 sudo mv /tmp/config.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 
 # Configure the CloudWatch Agent to start on boot

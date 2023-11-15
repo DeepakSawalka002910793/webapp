@@ -24,8 +24,8 @@ const getDecryptedCreds = (authHeader) => {
 
 const pAuthCheck = async (req, res, next) => {
   //Check if auth header is present and is a basic auth header.
-  if (!req.headers.authorization || req.headers.authorization.indexOf("Basic ") === -1) {
-    logger.error({statusCode: 401, message:"Header Auth missing - Unauthorized"})
+  if (!req.headers.authorization || req.headers.authorization.indexOf("Basic") === -1) {
+    logger.error({statusCode: 401, message:"Header Auth missing - Unauthorized"});
     return res.status(401).send();
   }
 

@@ -192,7 +192,7 @@ const getAssignmentList = async(req, res) => {
         // Token validation and user attachment should be done in middleware
         const userId = req.user && req.user.id;  // Extract user ID from the token
         if (!userId) {
-            logger.error({method: "GET", uri: "/v1/assignments", statusCode: 401, message: "Unauthorised user" });
+            logger.error({method: "GET", uri: "/v1/assignments", statusCode: 401, message: "Unauthorised user"});
             return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
         const assignments = await db.assignment.findAll();  // This fetches all assignments
@@ -234,21 +234,19 @@ const getAssignmentDetails = async(req, res) => {
     }
 
     try {
-        // Token validation and user attachment should be done in middleware
+        
         const userId = req.user && req.user.id;  // Extract user ID from the token
         if (!userId) {
-            logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 401, message: "Unauthorised user" });
+            logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 401, message: "Unauthorised user"});
             return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
 
         let assignId = req.params.id;  // Extract assignment ID from the request parameters
 
         const assignment = await db.assignment.findByPk(assignId);  
-            
-        
 
         if (!assignment) {
-            logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message:"Assignment not found"});
+            logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message: "Assignment not found"});
             return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
         
@@ -276,6 +274,5 @@ module.exports = {
     deleteAssignment,
     getAssignmentList,
     putAssignmentDetails,
-    getAssignmentDetails
-    
+    getAssignmentDetails  
 }

@@ -43,16 +43,6 @@ variable "artifacts_destination" {
   default = "/home/admin/webapp.zip"
 }
 
-variable "cloudwatch_source" {
-  type    = string
-  default = "../cloud-watch/config.json"
-}
-
-variable "cloudwatch_destination" {
-  type    = string
-  default = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
-}
-
 variable "script_file" {
   type    = string
   default = "webapp.sh"
@@ -104,11 +94,6 @@ build {
       "CHECKPOINT_DISABLE=1"
     ]
     script = "${var.script_file}"
-  }
-
-  provisioner "file" {
-    source      = "${var.cloudwatch_source}"
-    destination = "${var.cloudwatch_destination}"
   }
 
 }

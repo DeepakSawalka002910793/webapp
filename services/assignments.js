@@ -61,7 +61,7 @@ const putAssignmentDetails = async (req, res) => {
 
     helper.statsdClient.increment('PUT_assigndetails');
     
-    const userId = req.user.id;
+    const userId = req.user && req.user.id;
     if (!userId) {
         logger.error({method: "PUT", uri: "/v1/assignments/" + req.params.id, statusCode: 401, message: "Unauthorised user" });
         return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
@@ -97,12 +97,12 @@ const putAssignmentDetails = async (req, res) => {
             logger.error({method: "PUT", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message:"Assignment Already exists"});
             return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
-
+        /*
         const userId = req.user && req.user.id;
         if (!userId) {
             logger.error({method: "PUT", uri: "/v1/assignments/" + req.params.id, statusCode: 401, message: "Unauthorised user" });
             return res.status(401).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
-        }
+        }*/
 
         //Check if the user has permission to update the assignment (depends on your use case)
          if (assignment.owner_user_id !== userId) {
@@ -243,22 +243,23 @@ const getAssignmentDetails = async(req, res) => {
 
         let assignId = req.params.id;  // Extract assignment ID from the request parameters
 
-        const assignment = await db.assignment.findByPk(assignId);  
+        const assignments = await db.assignment.findByPk(assignId);  
 
-        if (!assignment) {
+        if (!assignments) {
             logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message: "Assignment not found"});
             return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
         
-        const result = {
+        const result = assignments.map(assignment => ({
             id: assignment.dataValues.id,
             name: assignment.dataValues.name,
             points: assignment.dataValues.points,
             num_of_attempts: assignment.dataValues.num_of_attempts,
             deadline: assignment.dataValues.deadline,
             assignment_created: assignment.dataValues.assignment_created,
-            assignment_updated: assignment.dataValues.assignment_updated,
-        };
+            assignment_updated: assignment.dataValues.assignment_updated
+        }));
+
         logger.info({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 200, message: "The required assignment is displayed successfully!!"});
         return res.status(200).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);
     } catch (err) {

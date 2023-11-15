@@ -43,6 +43,16 @@ variable "artifacts_destination" {
   default = "/home/admin/webapp.zip"
 }
 
+variable "cloudwatch_source" {
+  type    = string
+  default = "../cloud-watch/config.json"
+}
+
+variable "cloudwatch_destination" {
+  type    = string
+  default = "/tmp/config.json"
+}
+
 variable "script_file" {
   type    = string
   default = "webapp.sh"
@@ -82,6 +92,11 @@ build {
   provisioner "file" {
     source      = "${var.artifacts_source}"
     destination = "${var.artifacts_destination}"
+  }
+
+  provisioner "file" {
+    source      = "${var.cloudwatch_source}"
+    destination = "${var.cloudwatch_destination}"
   }
 
   provisioner "shell" {

@@ -243,14 +243,14 @@ const getAssignmentDetails = async(req, res) => {
 
         let assignId = req.params.id;  // Extract assignment ID from the request parameters
 
-        const assignments = await db.assignment.findByPk(assignId);  
+        const assignment = await db.assignment.findByPk(assignId);  
 
-        if (!assignments) {
+        if (!assignment) {
             logger.error({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message: "Assignment not found"});
             return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
         
-        const result = assignments.map(assignment => ({
+        const result = {
             id: assignment.dataValues.id,
             name: assignment.dataValues.name,
             points: assignment.dataValues.points,
@@ -258,7 +258,7 @@ const getAssignmentDetails = async(req, res) => {
             deadline: assignment.dataValues.deadline,
             assignment_created: assignment.dataValues.assignment_created,
             assignment_updated: assignment.dataValues.assignment_updated,
-        }));
+        };
 
         logger.info({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 200, message: "The required assignment is displayed successfully!!"});
         return res.status(200).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);

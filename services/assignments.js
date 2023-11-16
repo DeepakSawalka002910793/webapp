@@ -211,7 +211,7 @@ const getAssignmentList = async(req, res) => {
             num_of_attempts: assignment.num_of_attempts,
             deadline: assignment.deadline,
             assignment_created: assignment.assignment_created,
-            assignment_updated: assignment.assignment_updated
+            assignment_updated: assignment.assignment_updated,
            
         }));
         logger.info({method: "GET", uri: "/v1/assignments", statusCode: 200, message: "List of all Assignments is displayed successfully!!"});
@@ -257,7 +257,7 @@ const getAssignmentDetails = async(req, res) => {
             num_of_attempts: assignment.dataValues.num_of_attempts,
             deadline: assignment.dataValues.deadline,
             assignment_created: assignment.dataValues.assignment_created,
-            assignment_updated: assignment.dataValues.assignment_updated
+            assignment_updated: assignment.dataValues.assignment_updated,
         }));
 
         logger.info({method: "GET", uri: "/v1/assignments/" + req.params.id, statusCode: 200, message: "The required assignment is displayed successfully!!"});

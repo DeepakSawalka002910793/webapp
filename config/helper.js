@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const db = require('./dbSetup');
 const dotenv = require('dotenv');
 const StatsD = require('node-statsd');
+const logger = require('../logger/loggerindex');
 const statsdClient = new StatsD();
 
 dotenv.config();

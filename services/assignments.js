@@ -268,12 +268,12 @@ const getAssignmentDetails = async(req, res) => {
     }
 }
     
-    
+  
 
 module.exports = {
     createNewAssignment,
     deleteAssignment,
     getAssignmentList,
     putAssignmentDetails,
-    getAssignmentDetails  
+    getAssignmentDetails
 }

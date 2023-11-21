@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const db = require('../config/dbSetup');
 const helper = require('../config/helper');
 const logger = require('../logger/loggerindex');
+const dotenv = require('dotenv');
+dotenv.config();
 
 // Main function to add new users from CSV to the database
 const newUser = async (req, res) => {

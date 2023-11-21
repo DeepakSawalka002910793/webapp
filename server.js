@@ -38,7 +38,7 @@ db.sequelize.sync({force: false})
 app.get('/healthz', function(req, res) {
 
   helper.statsdClient.increment('healthz_counter');
-  if(Object.keys(req.body).length !== 0 || JSON.stringify(req.body) !== '{}' || Object.keys(req.query).length > 0) {
+  if(Object.keys(req.body).length !== 0 || Object.keys(req.query).length > 0) {
     // Send 400 error if the body is not empty
     logger.error({method: "GET", uri: "/healthz", statusCode: 400, message:"Enter valid request body and no query params"});
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -72,6 +72,10 @@ app.use('/healthz', (req, res) => {
 
 
 app.use('/v1/assignments', assignmentRoutes);
+
+app.use((req, res) => {
+  res.status(404).send();
+});
 
 app.use(methodOverride())
 app.use((err, req, res, next) => {

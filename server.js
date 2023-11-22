@@ -12,6 +12,7 @@ const assignmentRoutes = require('./api-routes/assignmentRoutes');
 
 const db = require('./config/dbSetup');
 db.user.hasMany(db.assignment, {foreignKey: "owner_user_id"});
+db.assignment.hasMany(db.submission, {foreignKey: "assignment_id"});
 db.sequelize.sync({force: false})
   .then(() =>{
    
@@ -81,6 +82,5 @@ app.use(methodOverride())
 app.use((err, req, res, next) => {
   return res.status(400).send();
 })
-
 
 module.exports = app;

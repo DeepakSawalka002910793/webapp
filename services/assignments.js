@@ -9,8 +9,8 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
         !req.body.points || 
         !req.body.num_of_attempts || 
         !req.body.deadline ||
-        (req.body.points && (req.body.points < 1 || typeof req.body.points=== 'string' || req.body.points > 100)) ||
-        (req.body.num_of_attempts && (req.body.num_of_attempts < 1 || typeof req.body.num_of_attempts=== 'string' || req.body.num_of_attempts > 100) ||
+        (req.body.points && (req.body.points < 1 || typeof req.body.points=== 'string' || req.body.points > 100)) || !Number.isInteger(req.body.points) ||
+        (req.body.num_of_attempts && (req.body.num_of_attempts < 1 || typeof req.body.num_of_attempts=== 'string' ||  req.body.num_of_attempts > 100) || !Number.isInteger(req.body.num_of_attempts) ||
         (typeof req.body.name === 'number' || !isNaN(parseFloat(req.body.name)) && isFinite(req.body.name))
         || (typeof req.body.name === 'string' && req.body.name.trim() === '') || Object.keys(req.body).length > 4))
          {
@@ -76,8 +76,8 @@ const putAssignmentDetails = async (req, res) => {
         !req.body.points || 
         !req.body.num_of_attempts || 
         !req.body.deadline ||
-        (req.body.points && (req.body.points < 1 || typeof req.body.points=== 'string' || req.body.points > 100)) ||
-        (req.body.num_of_attempts && (req.body.num_of_attempts < 1 || typeof req.body.num_of_attempts=== 'string' || req.body.num_of_attempts > 100)) || 
+        (req.body.points && (req.body.points < 1 || typeof req.body.points=== 'string' || req.body.points > 100)) || !Number.isInteger(req.body.points) ||
+        (req.body.num_of_attempts && (req.body.num_of_attempts < 1 || typeof req.body.num_of_attempts=== 'string' || req.body.num_of_attempts > 100)) || !Number.isInteger(req.body.num_of_attempts) ||
         (typeof req.body.name === 'number' || !isNaN(parseFloat(req.body.name)) && isFinite(req.body.name))||
         (typeof req.body.name === 'string' && req.body.name.trim() === '')  ||
         Object.keys(req.body).length > 4) {

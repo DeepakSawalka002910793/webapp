@@ -96,30 +96,44 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
         }
         logger.info({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 201, message: "Submission Accepted" });
         return res.status(201).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);
-    }catch(err) {
-        const { eMail, pass } = helper.getDecryptedCreds(req.headers.authorization);
-
-        if (axios.isAxiosError(err) && (!err.response || err.response.status === 404 || err.message === 'The submitted URL has no content.')) {
+    }
+    catch(err) {
+    
+        const { eMail } = helper.getDecryptedCreds(req.headers.authorization);
+    
+        if (axios.isAxiosError(err) && err.response) {
+            // Handle axios HTTP errors
             const failureMessage = {
                 submission_url: req.body.submission_url,
                 email: eMail,
                 status: 'invalid' 
             };
-
+    
             await sns.publish({
                 Message: JSON.stringify(failureMessage),
                 TopicArn: process.env.SNS_TOPIC_ARN
             }).promise();
-
-            logger.error({ method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "Invalid submission URL or no content" });
-            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send('Invalid submission URL or no content');
+    
+            logger.error({ method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: err.response.status, message: err.response.data || 'Axios error' });
+            return res.status(err.response.status).set('Cache-Control', 'no-store, no-cache, must-revalidate').send(err.response.data || 'Error');
+        } else {
+            // Handle non-Axios errors
+            const failureMessage = {
+                submission_url: req.body.submission_url,
+                email: eMail,
+                status: 'invalid' 
+            };
+    
+            await sns.publish({
+                Message: JSON.stringify(failureMessage),
+                TopicArn: process.env.SNS_TOPIC_ARN
+            }).promise();
+    
+            logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 500, message: "Server error: " + (err.message || JSON.stringify(err)) });
+            return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send('Server error');
         }
-                else {
-                    console.log("error", err)
-                    logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 500, message: "Server error" + err });
-                    res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send(err);
-    }}
-}
+    }
+}    
 
 module.exports = {
     createNewSubmission

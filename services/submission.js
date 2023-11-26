@@ -97,6 +97,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
         logger.info({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 201, message: "Submission Accepted" });
         return res.status(201).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);
     }catch(err) {
+        const { eMail, pass } = helper.getDecryptedCreds(req.headers.authorization);
 
         if (axios.isAxiosError(err) && (!err.response || err.response.status === 404 || err.message === 'The submitted URL has no content.')) {
             const failureMessage = {

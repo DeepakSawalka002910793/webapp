@@ -15,7 +15,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
     helper.statsdClient.increment('POST_submissiondetails');
     if(!req.body.submission_url || typeof req.body.submission_url !== 'string' ||
         (typeof req.body.submission_url === 'string' && req.body.submission_url.trim() === '') ||
-        !/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/archive\/refs\/tags\/[A-Za-z0-9_.-]+\.zip$/.test(req.body.submission_url) || Object.keys(req.body).length > 1)
+        !/^(http|https):\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/archive\/refs\/tags\/[A-Za-z0-9_.-]+\.zip$/.test(req.body.submission_url) || Object.keys(req.body).length > 1)
          {
             logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "Enter Valid Request Body"});
             return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
@@ -26,14 +26,18 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
 
         const response = await axios.head(req.body.submission_url);
 
-        const assignmentObj = await db.assignment.findByPk(req.params.id); 
+        const { eMail, pass } = helper.getDecryptedCreds(req.headers.authorization);
+
+        const user = await db.user.findOne({ where: { email: eMail, password: pass } });
+
+        const assignmentObj = await db.assignment.findOne({where:{id:req.params.id}});
 
         // Check if the assignment exists
         if (!assignmentObj) {
-            logger.error({method: "PUT", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message:"Assignment Already exists"});
+            logger.error({method: "POST", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message:"Assignment Not found"});
             return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
-
+        
         /*let assignmentObj = await db.assignment.findOne({ where: { assignment_id: req.params.id } });
         
 
@@ -57,10 +61,13 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
         }   
         
         
-        const { eMail } = helper.getDecryptedCreds(req.headers.authorization);
+        
         const message = {
             submission_url: req.body.submission_url,
-            email: eMail
+            email: eMail,
+            user_name: user.first_name,
+            user_id: user.id,
+            assign_id: req.params.id
         };
         const params = {
             Message: JSON.stringify(message),
@@ -72,7 +79,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
             assignment_id: req.params.id,
             submission_url: req.body.submission_url,
             submission_date: new Date().toISOString(),
-            assignment_updated: new Date().toISOString()
+            submission_updated: new Date().toISOString()
         });
 
         let result = {
@@ -80,7 +87,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
             "assignment_id": data.dataValues.assignment_id,
             "submission_url": data.dataValues.submission_url,
             "submission_date": data.dataValues.submission_date,
-            "assignment_updated": data.dataValues.assignment_updated,  
+            "submission_updated": data.dataValues.submission_updated,  
         }
         logger.info({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 201, message: "Submission Accepted" });
         return res.status(201).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);

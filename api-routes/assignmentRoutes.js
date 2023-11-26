@@ -44,8 +44,8 @@ router.all('/:id/submission', (req, res) => {
 });
 
 router.use('/:id/:wrongPath', (req, res) => {
-    logger.error({uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 404, message: "Enter correct path"});
-    res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
+    logger.error({uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "Enter correct path"});
+    res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
 });
 
 module.exports = router;

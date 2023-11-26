@@ -23,7 +23,7 @@ const createSubmissionModel = (sequelize) => {
             type: DataTypes.DATE,
             allowNull: false
         },
-        assignment_updated: {
+        submission_updated: {
             type: DataTypes.DATE,
             allowNull: false
         }
@@ -31,7 +31,7 @@ const createSubmissionModel = (sequelize) => {
     },
     {
         submittedAt: 'submission_date',
-        updatedAt: 'assignment_updated',
+        updatedAt: 'submission_updated',
         timestamps: false,
     },
     );

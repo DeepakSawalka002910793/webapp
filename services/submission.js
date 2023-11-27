@@ -15,7 +15,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
     helper.statsdClient.increment('POST_submissiondetails');
     if(!req.body.submission_url || typeof req.body.submission_url !== 'string' ||
         (typeof req.body.submission_url === 'string' && req.body.submission_url.trim() === '') ||
-        /^(http|https):\/\/.*\.zip$/.test(req.body.submission_url) || Object.keys(req.body).length > 1)
+        !/^(http|https):\/\/.*\.zip$/.test(req.body.submission_url) || Object.keys(req.body).length > 1)
          {  
             const { eMail } = helper.getDecryptedCreds(req.headers.authorization);
     

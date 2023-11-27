@@ -15,9 +15,22 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
     helper.statsdClient.increment('POST_submissiondetails');
     if(!req.body.submission_url || typeof req.body.submission_url !== 'string' ||
         (typeof req.body.submission_url === 'string' && req.body.submission_url.trim() === '') ||
-        !/^(http|https):\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/archive\/refs\/tags\/[A-Za-z0-9_.-]+\.zip$/.test(req.body.submission_url) || Object.keys(req.body).length > 1)
-         {
-            logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "Enter Valid Request Body"});
+        /^(http|https):\/\/.*\.zip$/.test(req.body.submission_url) || Object.keys(req.body).length > 1)
+         {  
+            const { eMail } = helper.getDecryptedCreds(req.headers.authorization);
+    
+                const failureMessage = {
+                    submission_url: req.body.submission_url,
+                    email: eMail,
+                    status: 'invalid_url' 
+                };
+    
+            await sns.publish({
+                Message: JSON.stringify(failureMessage),
+                TopicArn: process.env.SNS_TOPIC_ARN
+            }).promise();
+
+            logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "Enter Valid URL and request body"});
             return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         } 
         
@@ -25,15 +38,29 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
     try{
 
         const response = await axios.head(req.body.submission_url);
-
+        const { eMail, pass } = helper.getDecryptedCreds(req.headers.authorization);
         // Check for 0-byte payload
         if (!response.headers['content-length'] || parseInt(response.headers['content-length']) === 0) {
-            throw new Error('The submitted URL has no content.');
-        }
+            
+    
+                const failureMessage = {
+                    submission_url: req.body.submission_url,
+                    email: eMail,
+                    status: 'no_content' 
+                };
+    
+            await sns.publish({
+                Message: JSON.stringify(failureMessage),
+                TopicArn: process.env.SNS_TOPIC_ARN
+            }).promise();
 
-        const { eMail, pass } = helper.getDecryptedCreds(req.headers.authorization);
+            logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "File does not contain any payload"});
+            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
+        } 
+        
 
         const user = await db.user.findOne({ where: { email: eMail, password: pass } });
+       
 
         const assignmentObj = await db.assignment.findOne({where:{id:req.params.id}});
 
@@ -106,7 +133,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
             const failureMessage = {
                 submission_url: req.body.submission_url,
                 email: eMail,
-                status: 'invalid' 
+                status: 'no_file' 
             };
     
             await sns.publish({
@@ -114,23 +141,12 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
                 TopicArn: process.env.SNS_TOPIC_ARN
             }).promise();
     
-            logger.error({ method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: err.response.status, message: err.response.data || 'Axios error' });
-            return res.status(err.response.status).set('Cache-Control', 'no-store, no-cache, must-revalidate').send(err.response.data || 'Error');
+            logger.error({ method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: err.response.status, message: err.response.data });
+            return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         } else {
-            // Handle non-Axios errors
-            const failureMessage = {
-                submission_url: req.body.submission_url,
-                email: eMail,
-                status: 'invalid' 
-            };
     
-            await sns.publish({
-                Message: JSON.stringify(failureMessage),
-                TopicArn: process.env.SNS_TOPIC_ARN
-            }).promise();
-    
-            logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 500, message: "Server error: " + (err.message || JSON.stringify(err)) });
-            return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send('Server error');
+            logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 500, message: "Server error: " + err.message  });
+            return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
     }
 }    

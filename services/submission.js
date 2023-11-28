@@ -39,26 +39,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
 
         const response = await axios.head(req.body.submission_url);
         const { eMail, pass } = helper.getDecryptedCreds(req.headers.authorization);
-        // Check for 0-byte payload
-        if (!response.headers['content-length'] || parseInt(response.headers['content-length']) === 0) {
-            
-    
-                const failureMessage = {
-                    submission_url: req.body.submission_url,
-                    email: eMail,
-                    status: 'no_content' 
-                };
-    
-            await sns.publish({
-                Message: JSON.stringify(failureMessage),
-                TopicArn: process.env.SNS_TOPIC_ARN
-            }).promise();
-
-            logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "File does not contain any payload"});
-            return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
-        } 
         
-
         const user = await db.user.findOne({ where: { email: eMail, password: pass } });
        
 

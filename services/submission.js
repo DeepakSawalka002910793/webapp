@@ -29,18 +29,13 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
                 Message: JSON.stringify(failureMessage),
                 TopicArn: process.env.SNS_TOPIC_ARN
             }).promise();
-
+            
             logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 400, message: "Enter Valid URL and request body"});
             return res.status(400).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
-        } 
-        
-
-    try{
+            }
+    try {
 
         const response = await axios.head(req.body.submission_url);
-        const { eMail, pass } = helper.getDecryptedCreds(req.headers.authorization);
-        
-        const user = await db.user.findOne({ where: { email: eMail, password: pass } });
        
 
         const assignmentObj = await db.assignment.findOne({where:{id:req.params.id}});
@@ -50,6 +45,11 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
             logger.error({method: "POST", uri: "/v1/assignments/" + req.params.id, statusCode: 404, message:"Assignment Not found"});
             return res.status(404).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
         }
+
+        const { eMail } = helper.getDecryptedCreds(req.headers.authorization);
+        
+        const user = await db.user.findOne({ where: { email: eMail} });
+        
         
         /*let assignmentObj = await db.assignment.findOne({ where: { assignment_id: req.params.id } });
         
@@ -106,7 +106,7 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
         return res.status(201).set('Cache-Control', 'no-store, no-cache, must-revalidate').json(result);
     }
     catch(err) {
-    
+        
         const { eMail } = helper.getDecryptedCreds(req.headers.authorization);
     
         if (axios.isAxiosError(err) && err.response) {
@@ -127,10 +127,10 @@ const createNewSubmission = async (req, res) => { // Create new Submission funct
         } else {
     
             logger.error({method: "POST", uri: "/v1/assignments" + req.params.id + "/submission", statusCode: 500, message: "Server error: " + err.message  });
-            return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send();
+            return res.status(500).set('Cache-Control', 'no-store, no-cache, must-revalidate').send(err.message);
         }
     }
-}    
+}   
 
 module.exports = {
     createNewSubmission

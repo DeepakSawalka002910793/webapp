@@ -28,6 +28,7 @@ const createNewAssignment = async (req, res) => { // Create new Assignment funct
 
         let {eMail, pass} = helper.getDecryptedCreds(req.headers.authorization);
         let user = await db.user.findOne({where:{email:eMail}});
+        console.log(user.first_name);
        
     
         let data = await user.createAssignment({

@@ -60,16 +60,41 @@ jobs:
         run: zip -r webapp.zip . -x ".git/*" ".gitignore" ".github/*"
 
       - name: Packer Init
+        id: init
         run: packer init packer-debian.pkr.hcl || exit 1
         working-directory: packer
 
       - name: Validate Packer Template
+        id: validate
         run: packer validate packer-debian.pkr.hcl || (echo "Packer template validation failed!" && exit 1)
         working-directory: packer
 
       - name: Build AMI
+        id: build
         if: success()
-        run: packer build -color=false -on-error=abort -var-file=dev.auto.pkrvars.hcl packer-debian.pkr.hcl || (echo "Packer Build failed!" && exit 1)
+        run: packer build -machine-readable -color=false -on-error=abort -var-file=dev.auto.pkrvars.hcl packer-debian.pkr.hcl || (echo "Packer Build failed!" && exit 1) | tee build.log
         working-directory: packer
         env:
           PACKER_LOG: 1
+
+      - name: Parse AMI ID
+        id: parse_ami_id
+        working-directory: packer
+        run: |
+          AMI="$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)"
+          echo "ami_id=$AMI" >> "$GITHUB_OUTPUT"
+
+      - name: Configure AWS DEMO Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Output AMI_ID
+        run: |
+          echo $AMI_ID
+        env:
+          AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
+
+        

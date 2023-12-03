@@ -77,6 +77,9 @@ jobs:
         env:
           PACKER_LOG: 1
 
+      - name: List files in the current directory
+        run: ls -l
+
       - name: Parse AMI ID
         id: parse_ami_id
         working-directory: packer

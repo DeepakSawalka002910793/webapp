@@ -85,10 +85,11 @@ jobs:
           echo "ami_id=$AMI" >> "$GITHUB_OUTPUT"
 
       - name: Output AMI_ID
-        run: |
-          echo $AMI_ID
         env:
           AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
+        run: |
+          echo $AMI_ID
+        
 
   dev:
     needs: test_and_build

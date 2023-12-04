@@ -27,7 +27,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: ${{ secrets.DBPASS }}
           MYSQL_DATABASE: "csye6225"
         ports:
-          - 3306:3306 # Corrected the port
+          - 3306:3306 
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval 10s
@@ -77,9 +77,6 @@ jobs:
         env:
           PACKER_LOG: 1
 
-      - name: List files in the current directory
-        run: ls -l
-
       - name: Parse AMI ID
         id: parse_ami_id
         working-directory: packer
@@ -87,19 +84,90 @@ jobs:
           AMI="$(grep 'artifact,0,id' build.log | cut -d, -f6 | cut -d: -f2)"
           echo "ami_id=$AMI" >> "$GITHUB_OUTPUT"
 
-      - name: Configure AWS DEMO Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
       - name: Output AMI_ID
         run: |
           echo $AMI_ID
         env:
           AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
 
+  dev:
+    needs: test_and_build
+    runs-on: ubuntu-latest
+    env: 
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-region: us-east-1
+    steps:
+      - name: Create Dev launch template version
+        run: |
+          aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}'
+        env:
+          AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
+
+      - name: Update ASG to use the latest launch template version
+        run: |
+          LATEST_VERSION=$(aws ec2 describe-launch-template-versions --launch-template-name csye6225_launchTemplate --query "LaunchTemplateVersions[0].VersionNumber" --output text)
+          aws autoscaling update-auto-scaling-group --auto-scaling-group-name web-app --launch-template "LaunchTemplateName=csye6225_launchTemplate,Version=$LATEST_VERSION"
+
+      - name: Start instance refresh
+        run: |
+          aws autoscaling start-instance-refresh --auto-scaling-group-name web-app
+
+      - name: Wait for instance refresh to complete
+        run: |
+          REFRESH_ID=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name web-app --query "InstanceRefreshes[0].InstanceRefreshId" --output text)
+          STATUS="Pending"
+          while [[ "$STATUS" == "Pending" || "$STATUS" == "InProgress" ]]; do
+            echo "Waiting for instance refresh to complete"
+            sleep 60
+            STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name web-app --instance-refresh-ids $REFRESH_ID --query "InstanceRefreshes[0].Status" --output text)
+            echo "Current status: $STATUS"
+          done
+
+          if [ "$STATUS" != "Successful" ]; then
+            echo "Instance refresh failed with status: $STATUS"
+            exit 1
+          fi
+
+  prod:
+    needs: test_and_build
+    runs-on: ubuntu-latest
+    env:
+      aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+      aws-region: us-east-1
+    
+    steps:
+      - name: Create Dev launch template version
+        run: |
+          aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}'
+        env:
+          AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
+
+      - name: Update ASG to use the latest launch template version
+        run: |
+          LATEST_VERSION=$(aws ec2 describe-launch-template-versions --launch-template-name csye6225_launchTemplate --query "LaunchTemplateVersions[0].VersionNumber" --output text)
+          aws autoscaling update-auto-scaling-group --auto-scaling-group-name web-app --launch-template "LaunchTemplateName=csye6225_launchTemplate,Version=$LATEST_VERSION"
+
+      - name: Start instance refresh
+        run: |
+          aws autoscaling start-instance-refresh --auto-scaling-group-name web-app
+
+      - name: Wait for instance refresh to complete
+        run: |
+          REFRESH_ID=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name web-app --query "InstanceRefreshes[0].InstanceRefreshId" --output text)
+          STATUS="Pending"
+          while [[ "$STATUS" == "Pending" || "$STATUS" == "InProgress" ]]; do
+            echo "Waiting for instance refresh to complete"
+            sleep 60
+            STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name web-app --instance-refresh-ids $REFRESH_ID --query "InstanceRefreshes[0].Status" --output text)
+            echo "Current status: $STATUS"
+          done
+
+          if [ "$STATUS" != "Successful" ]; then
+            echo "Instance refresh failed with status: $STATUS"
+            exit 1
+          fi
 
 
         

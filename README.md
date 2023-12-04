@@ -1,52 +1,46 @@
-# webapp
-Creating a api request using Nodejs and MariaDB and checking it in POSTMAN.
+# Web Application Deployment
+ 
+## Overview
+ 
+This project outlines the process for deploying a secure web application in both development and demo environments, using AWS services and SSL certificates for security.
+ 
+### Environments
+ 
+- **Dev Environment**: Utilizes AWS Certificate Manager for SSL certificates.
+- **Demo Environment**: SSL certificates are obtained from zeroSSL, imported into AWS Certificate Manager, and configured with a load balancer.
+ 
+## CI/CD Workflow
+ 
+### GitHub Actions Workflow
+ 
+Triggered on Pull Request merge, it includes:
+ 
+- Running unit tests.
+- Validating Packer Template.
+- Building Application Artifacts.
+- Building AMI.
+- Upgrading OS packages.
+- Installing dependencies (Python, Node.js, etc.).
+- Installing application dependencies (`pip install` for Python).
+- Setting up the application (copying artifacts and configuration files).
+- Configuring the application for automatic startup on VM launch.
+- [NEW] Creating a new Launch Template version with the latest AMI for the auto-scaling group.
+- [NEW] Issuing command to the auto-scale group for instance refresh using AWS CLI.
+- [NEW] Ensuring GitHub Actions workflow waits for instance refresh completion.
+ 
+### Security
+ 
+- HTTP endpoints are secured with SSL certificates.
+- Direct EC2 instance access is restricted.
+ 
+## Importing SSL Certificate from CLI
+ 
+To import an SSL certificate into AWS Certificate Manager, use the following command:
+ 
+```bash
+# Command to import the SSL certificate
+Get-Content -Path "certificate.crt" | Set-Clipboard
+Get-Content -Path "ca_bundle.crt" | Set-Clipboard
+Get-Content -Path "private.key" | Set-Clipboard
+```
 
-Prerequisites 1.Visual studio code 2.POSTMAN 3.Database - Maria.DB 4.Node.js
-
-Dependencies to be installed npm i start app by npm start Important Commands to run the server and test Scripts npm start: starts the development server jest test: runs test suite Endpoints The following endpoints are available for operations:
-
-authenticated: Operations available only to authenticated users
-
-GET - http://localhost:3000/v1/assignments
-
-POST - http://localhost:3000/v1/assignments
-
-PUT - http://localhost:3000/v1/assignments/{id}
-
-GET - http://localhost:3000/v1/assignments/{id}
-
-DELETE - http://localhost:3000/v1/assignments/{id}
-
-Publc: Operations available to all users without authentication
-
-GET - http://localhost:3000/healthz
-
-Responds with following HTTP messages "200 OK - The request was successful."
-
-"201 Created - A new resource was created as a result of the request, often sent in response to a POST or some PUT requests."
-
-"204 No Content - The request was successful, but there's no need for the client to navigate away from its current page."
-
-"400 Bad Request - The server could not process the request due to an invalid syntax."
-
-"401 Unauthenticated - The client must provide authentication to receive the requested response."
-
-"403 Forbidden - The client does not have access to the requested resource."
-
-"404 - Not Found"
-
-"500 Internal Server Error - The server encountered an issue it couldn't handle."
-
-Instructions:
-
-Step 1: Clone the repository or download and unzip the source repository.
-
-Step 2: Create appropriate files in the IDE and write the code to test the API call in Postman.
-
-Step 3: Open Postman to Test the API's
-
-Step 4: Check the Database after each and every API is called to see the status in Database.
-
-Test the api with the above HTTPs status code.
-
-Please create a pull request with a detailed description.

@@ -87,6 +87,8 @@ jobs:
       - name: Output AMI_ID
         run: |
           echo $AMI_ID
+        env:
+          AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
 
   dev:
     needs: test_and_build

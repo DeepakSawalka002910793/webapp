@@ -100,13 +100,12 @@ jobs:
     env: 
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      aws-region: us-east-1
       AMI_ID: ${{ needs.test_and_build.outputs.ami_id }}
       
     steps:
       - name: Create Dev launch template version
         run: |
-          aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}' --debug
+          aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}' --region us-east-1 --debug
 
       - name: Update ASG to use the latest launch template version
         run: |
@@ -139,13 +138,12 @@ jobs:
     env:
       aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-      aws-region: us-east-1
       AMI_ID: ${{ needs.test_and_build.outputs.ami_id }}
     
     steps:
       - name: Create Prod launch template version
         run: |
-          aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}'
+          aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}' --region us-east-1 --debug
 
       - name: Update ASG to use the latest launch template version
         run: |

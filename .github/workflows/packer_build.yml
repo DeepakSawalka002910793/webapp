@@ -97,15 +97,14 @@ jobs:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       aws-region: us-east-1
+      AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
 
     steps:
       - name: Create Dev launch template version
         run: |
           echo "AMI ID: $AMI_ID"
           aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}'
-        env:
-          AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
-
+          
       - name: Update ASG to use the latest launch template version
         run: |
           LATEST_VERSION=$(aws ec2 describe-launch-template-versions --launch-template-name csye6225_launchTemplate --query "LaunchTemplateVersions[0].VersionNumber" --output text)
@@ -138,14 +137,13 @@ jobs:
       aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
       aws-region: us-east-1
+      AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
     
     steps:
       - name: Create Prod launch template version
         run: |
           echo "AMI ID: $AMI_ID"
           aws ec2 create-launch-template-version --launch-template-name csye6225_launchTemplate --source-version 1 --launch-template-data '{"ImageId":"'"$AMI_ID"'"}'
-        env:
-          AMI_ID: ${{ steps.parse_ami_id.outputs.ami_id }}
 
       - name: Update ASG to use the latest launch template version
         run: |

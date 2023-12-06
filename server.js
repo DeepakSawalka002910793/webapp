@@ -72,7 +72,7 @@ app.use('/healthz', (req, res) => {
 });
 
 
-app.use('/demo/assignments', assignmentRoutes); //v2 version
+app.use('/v3/assignments', assignmentRoutes); //v2 version
 
 app.use((req, res) => {
   res.status(404).send();
